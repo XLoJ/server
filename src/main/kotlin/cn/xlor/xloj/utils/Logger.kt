@@ -1,4 +1,4 @@
-package cn.xlor.oj.utils
+package cn.xlor.xloj.utils
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

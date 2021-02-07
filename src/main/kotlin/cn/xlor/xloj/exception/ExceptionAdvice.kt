@@ -1,6 +1,6 @@
-package cn.xlor.oj.exception
+package cn.xlor.xloj.exception
 
-import cn.xlor.oj.utils.LoggerDelegate
+import cn.xlor.xloj.utils.LoggerDelegate
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.FieldError

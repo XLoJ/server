@@ -1,4 +1,4 @@
-package cn.xlor.oj.model
+package cn.xlor.xloj.model
 
 import org.ktorm.database.Database
 import org.ktorm.entity.Entity

@@ -1,4 +1,4 @@
-package cn.xlor.oj.security
+package cn.xlor.xloj.security
 
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component

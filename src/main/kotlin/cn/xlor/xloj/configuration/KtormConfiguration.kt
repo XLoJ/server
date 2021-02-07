@@ -1,4 +1,4 @@
-package cn.xlor.oj.configuration
+package cn.xlor.xloj.configuration
 
 import com.fasterxml.jackson.databind.Module
 import org.ktorm.database.Database

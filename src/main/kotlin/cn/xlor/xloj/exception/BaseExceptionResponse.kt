@@ -1,4 +1,4 @@
-package cn.xlor.oj.exception
+package cn.xlor.xloj.exception
 
 import org.springframework.http.HttpStatus
 import java.time.LocalDateTime

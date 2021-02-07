@@ -1,7 +1,7 @@
-package cn.xlor.oj.repository
+package cn.xlor.xloj.repository
 
-import cn.xlor.oj.model.User
-import cn.xlor.oj.model.users
+import cn.xlor.xloj.model.User
+import cn.xlor.xloj.model.users
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find
