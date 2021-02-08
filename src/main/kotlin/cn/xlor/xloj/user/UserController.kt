@@ -1,11 +1,9 @@
 package cn.xlor.xloj.user
 
+import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.user.dto.UserLoginDto
 import cn.xlor.xloj.user.dto.UserRegisterDto
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
@@ -22,5 +20,10 @@ class UserController(
   fun register(@Valid @RequestBody userRegisterDto: UserRegisterDto): UserLoginResponse {
     userService.register(userRegisterDto)
     return userService.login(userRegisterDto.username, userRegisterDto.password)
+  }
+
+  @GetMapping("/profile")
+  fun getMyProfile(@RequestAttribute user: UserProfile): UserProfile {
+    return user
   }
 }

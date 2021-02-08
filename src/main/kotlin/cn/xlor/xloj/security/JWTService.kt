@@ -1,5 +1,7 @@
 package cn.xlor.xloj.security
 
+import cn.xlor.xloj.utils.LoggerDelegate
+import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.SignatureAlgorithm
@@ -10,6 +12,8 @@ import javax.crypto.SecretKey
 
 @Service
 class JWTService {
+
+  private val logger by LoggerDelegate()
 
   @Value("\${secret}")
   lateinit var secret: String
@@ -25,9 +29,14 @@ class JWTService {
       .compact()
   }
 
-//  fun verify(token: String): String {
-//    val claimsJws =
-//      Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
-//    return claimsJws.body.subject
-//  }
+  fun verify(token: String): Optional<String> {
+    return try {
+      val claimsJws =
+        Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
+      Optional.of(claimsJws.body.subject)
+    } catch (ex: JwtException) {
+      logger.error(ex.message)
+      Optional.empty()
+    }
+  }
 }
