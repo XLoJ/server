@@ -7,6 +7,12 @@ import org.ktorm.schema.Table
 import org.ktorm.schema.int
 import org.ktorm.schema.text
 
+data class UserProfile(
+  val id: Int,
+  val username: String,
+  val nickname: String
+)
+
 interface User : Entity<User> {
   companion object : Entity.Factory<User>()
 
@@ -18,6 +24,8 @@ interface User : Entity<User> {
 
   var password: String
 }
+
+fun User.toUserProfile() = UserProfile(id, username, nickname)
 
 object Users : Table<User>("users") {
   val id = int("id").primaryKey().bindTo { it.id }

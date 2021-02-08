@@ -1,6 +1,7 @@
 package cn.xlor.xloj.exception
 
 import cn.xlor.xloj.utils.LoggerDelegate
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.FieldError
@@ -15,11 +16,18 @@ class ExceptionAdvice {
 
   private val logger by LoggerDelegate()
 
+  private fun <T : BaseExceptionResponse> makeResponseEntity(exceptionResponse: T) =
+    ResponseEntity.status(exceptionResponse.status).body(exceptionResponse)
+
   @ExceptionHandler(value = [Throwable::class])
   fun handleAll(throwable: Throwable): ResponseEntity<BaseExceptionResponse> {
     logger.error(throwable.message)
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-      .body(BaseExceptionResponse(HttpStatus.BAD_REQUEST, throwable.message ?: "Unknown"))
+    return makeResponseEntity(
+      BaseExceptionResponse(
+        HttpStatus.BAD_REQUEST,
+        throwable.message ?: "Unknown"
+      )
+    )
   }
 
   @ExceptionHandler(value = [MethodArgumentNotValidException::class])
@@ -39,13 +47,11 @@ class ExceptionAdvice {
         }
       }
       .toList()
-    return ResponseEntity
-      .status(HttpStatus.BAD_REQUEST)
-      .body(
-        ValidationException(
-          HttpStatus.BAD_REQUEST, exception.message, violations
-        )
+    return makeResponseEntity(
+      ValidationException(
+        HttpStatus.BAD_REQUEST, exception.message, violations
       )
+    )
   }
 
   @ExceptionHandler(value = [WebExchangeBindException::class])
@@ -65,13 +71,32 @@ class ExceptionAdvice {
         }
       }
       .toList()
-    return ResponseEntity
-      .status(exception.status)
-      .body(
-        ValidationException(
-          exception.status, exception.reason
-            ?: "Validation failure", violations
-        )
+    return makeResponseEntity(
+      ValidationException(
+        exception.status, exception.reason
+          ?: "Validation failure", violations
       )
+    )
+  }
+
+  @ExceptionHandler(value = [DuplicateKeyException::class])
+  fun handleDuplicateKey(exception: DuplicateKeyException): ResponseEntity<BaseExceptionResponse> {
+    logger.error(exception.message)
+    return makeResponseEntity(
+      BaseExceptionResponse(
+        HttpStatus.BAD_REQUEST,
+        "DuplicateKey"
+      )
+    )
+  }
+
+  @ExceptionHandler(UnknownUserException::class)
+  fun handleUnknownUser(exception: UnknownUserException): ResponseEntity<UnknownUserExceptionResponse> {
+    return makeResponseEntity(UnknownUserExceptionResponse(exception.username))
+  }
+
+  @ExceptionHandler(IncorrectPasswordException::class)
+  fun handleIncorrectPassword(exception: IncorrectPasswordException): ResponseEntity<IncorrectPasswordExceptionResponse> {
+    return makeResponseEntity(IncorrectPasswordExceptionResponse(exception.username))
   }
 }

@@ -6,3 +6,5 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
+secret: whgwhg66666666666666666666666666

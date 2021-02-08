@@ -28,16 +28,16 @@ class AuthenticationFilter : Filter {
     // 2. check JWT Token
     // 3. Go to cache (memory or redis)
     // 4. Go to database
-    val req = request as HttpServletRequest
-    val auth = req.getHeader("Authorization")
-
-    if (auth != null) {
-      userMap[auth] = "user"
-      request.setAttribute("name", auth)
+//    val req = request as HttpServletRequest
+//    val auth = req.getHeader("Authorization")
+//
+//    if (auth != null) {
+//      userMap[auth] = "user"
+//      request.setAttribute("name", auth)
       chain.doFilter(request, response)
-    } else {
-      val res = response as HttpServletResponse
-      res.status = HttpStatus.UNAUTHORIZED.value()
-    }
+//    } else {
+//      val res = response as HttpServletResponse
+//      res.status = HttpStatus.UNAUTHORIZED.value()
+//    }
   }
 }
