@@ -11,17 +11,26 @@ import javax.validation.Valid
 class UserController(
   private val userService: UserService
 ) {
+  /**
+   * User login.
+   */
   @PostMapping("/login")
   fun login(@Valid @RequestBody userLoginDto: UserLoginDto): UserLoginResponse {
     return userService.login(userLoginDto.username, userLoginDto.password)
   }
 
+  /**
+   * Register a new user.
+   */
   @PostMapping("/register")
   fun register(@Valid @RequestBody userRegisterDto: UserRegisterDto): UserLoginResponse {
     userService.register(userRegisterDto)
     return userService.login(userRegisterDto.username, userRegisterDto.password)
   }
 
+  /**
+   * Get user profile.
+   */
   @GetMapping("/profile")
   fun getMyProfile(@RequestAttribute user: UserProfile): UserProfile {
     return user
