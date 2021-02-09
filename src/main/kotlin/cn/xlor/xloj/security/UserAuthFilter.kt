@@ -3,15 +3,11 @@ package cn.xlor.xloj.security
 import cn.xlor.xloj.model.toUserProfile
 import cn.xlor.xloj.repository.UserRepository
 import cn.xlor.xloj.utils.LoggerDelegate
-import org.springframework.core.annotation.Order
-import org.springframework.http.HttpStatus
-import org.springframework.stereotype.Component
 import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 class UserAuthFilter(
   private val jwtService: JWTService,
@@ -36,7 +32,10 @@ class UserAuthFilter(
       if (optionalUsername.isPresent) {
         val username = optionalUsername.get()
         logger.info("\"$username\" is visiting...")
-        req.setAttribute(userRequestAttributeKey, userRepository.findOneUserByUsername(username)!!.toUserProfile())
+        req.setAttribute(
+          userRequestAttributeKey,
+          userRepository.findOneUserByUsername(username)!!.toUserProfile()
+        )
         chain.doFilter(request, response)
       } else {
         makeUnAuthorizeResponse(response, "Token 错误")

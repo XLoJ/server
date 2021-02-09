@@ -6,8 +6,8 @@ import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.model.toUserProfile
 import cn.xlor.xloj.repository.UserRepository
 import cn.xlor.xloj.security.JWTService
-import cn.xlor.xloj.user.dto.UserRegisterDto
 import cn.xlor.xloj.security.checkPassword
+import cn.xlor.xloj.user.dto.UserRegisterDto
 import org.springframework.stereotype.Service
 
 data class UserLoginResponse(

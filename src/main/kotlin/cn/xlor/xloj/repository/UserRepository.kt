@@ -1,13 +1,12 @@
 package cn.xlor.xloj.repository
 
 import cn.xlor.xloj.model.*
-import cn.xlor.xloj.user.dto.UserRegisterDto
 import cn.xlor.xloj.security.hashPassword
+import cn.xlor.xloj.user.dto.UserRegisterDto
 import cn.xlor.xloj.utils.LoggerDelegate
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.insert
-import org.ktorm.entity.EntitySequence
 import org.ktorm.entity.filter
 import org.ktorm.entity.find
 import org.ktorm.entity.toList
