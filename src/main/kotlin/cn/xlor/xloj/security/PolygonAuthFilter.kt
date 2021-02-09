@@ -25,8 +25,7 @@ class PolygonAuthFilter(
     if (isFindPolygonAuth) {
       chain.doFilter(request, response)
     } else {
-      val res = response as HttpServletResponse
-      res.status = HttpStatus.UNAUTHORIZED.value()
+      makeUnAuthorizeResponse(response, "您没有 Polygon 权限", userProfile.username)
     }
   }
 }

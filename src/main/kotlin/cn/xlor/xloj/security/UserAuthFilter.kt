@@ -39,13 +39,10 @@ class UserAuthFilter(
         req.setAttribute(userRequestAttributeKey, userRepository.findOneUserByUsername(username)!!.toUserProfile())
         chain.doFilter(request, response)
       } else {
-        val res = response as HttpServletResponse
-        res.status = HttpStatus.UNAUTHORIZED.value()
-        // TODO: add UNAUTHORIZED message
+        makeUnAuthorizeResponse(response, "Token 错误")
       }
     } else {
-      val res = response as HttpServletResponse
-      res.status = HttpStatus.UNAUTHORIZED.value()
+      makeUnAuthorizeResponse(response, "用户不存在")
     }
   }
 }
