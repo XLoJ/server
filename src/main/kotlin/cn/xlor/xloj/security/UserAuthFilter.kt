@@ -17,6 +17,10 @@ class UserAuthFilter(
   private val jwtService: JWTService,
   private val userRepository: UserRepository
 ) : Filter {
+  companion object {
+    const val userRequestAttributeKey = "user"
+  }
+
   private val logger by LoggerDelegate()
 
   override fun doFilter(
@@ -31,8 +35,8 @@ class UserAuthFilter(
       val optionalUsername = jwtService.verify(auth)
       if (optionalUsername.isPresent) {
         val username = optionalUsername.get()
-        logger.info("$username is visiting...")
-        req.setAttribute("user", userRepository.findOneUserByUsername(username)!!.toUserProfile())
+        logger.info("\"$username\" is visiting...")
+        req.setAttribute(userRequestAttributeKey, userRepository.findOneUserByUsername(username)!!.toUserProfile())
         chain.doFilter(request, response)
       } else {
         val res = response as HttpServletResponse
