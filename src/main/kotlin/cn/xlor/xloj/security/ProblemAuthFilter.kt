@@ -1,5 +1,7 @@
 package cn.xlor.xloj.security
 
+import cn.xlor.xloj.ProblemAttributeKey
+import cn.xlor.xloj.UserAttributeKey
 import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.repository.ProblemRepository
 import javax.servlet.Filter
@@ -18,7 +20,7 @@ class ProblemAuthFilter(
   ) {
     val req = request as HttpServletRequest
     val userProfile =
-      req.getAttribute(UserAuthFilter.userRequestAttributeKey) as UserProfile
+      req.getAttribute(UserAttributeKey) as UserProfile
     val requestURIList = req.requestURI.split("/")
     assert(requestURIList.size > 3)
     if (requestURIList[3] == "") {
@@ -30,7 +32,7 @@ class ProblemAuthFilter(
           problemRepository.findUserProblemList(userProfile.id)
         val index = userProblemList.indexOfFirst { it.id == problemId }
         if (index != -1) {
-          req.setAttribute("problem", userProblemList[index])
+          req.setAttribute(ProblemAttributeKey, userProblemList[index])
           chain.doFilter(request, response)
         } else {
           makeNotFoundResponse(response, "没有找到编号为 $problemId 的题目")

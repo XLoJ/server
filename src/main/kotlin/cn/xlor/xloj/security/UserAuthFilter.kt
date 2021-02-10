@@ -1,5 +1,6 @@
 package cn.xlor.xloj.security
 
+import cn.xlor.xloj.UserAttributeKey
 import cn.xlor.xloj.model.toUserProfile
 import cn.xlor.xloj.repository.UserRepository
 import cn.xlor.xloj.utils.LoggerDelegate
@@ -14,10 +15,6 @@ class UserAuthFilter(
   private val jwtService: JWTService,
   private val userRepository: UserRepository
 ) : Filter {
-  companion object {
-    const val userRequestAttributeKey = "user"
-  }
-
   private val logger by LoggerDelegate()
 
   override fun doFilter(
@@ -34,7 +31,7 @@ class UserAuthFilter(
         val username = optionalUsername.get()
         logger.info("\"$username\" is visiting...")
         req.setAttribute(
-          userRequestAttributeKey,
+          UserAttributeKey,
           userRepository.findOneUserByUsername(username)!!.toUserProfile()
         )
         chain.doFilter(request, response)

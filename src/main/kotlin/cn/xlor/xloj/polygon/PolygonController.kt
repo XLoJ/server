@@ -20,7 +20,7 @@ class PolygonController(
   }
 
   @GetMapping("/problem/{pid}")
-  fun findProblem(): String {
-    return "problem"
+  fun findProblem(@RequestAttribute problem: Problem): Problem {
+    return problem
   }
 }

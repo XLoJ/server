@@ -1,5 +1,6 @@
 package cn.xlor.xloj.security
 
+import cn.xlor.xloj.UserAttributeKey
 import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.repository.UserRepository
 import javax.servlet.Filter
@@ -18,7 +19,7 @@ class PolygonAuthFilter(
   ) {
     val req = request as HttpServletRequest
     val userProfile =
-      req.getAttribute(UserAuthFilter.userRequestAttributeKey) as UserProfile
+      req.getAttribute(UserAttributeKey) as UserProfile
     val userGroups = userRepository.findUserGroups(userProfile.id)
     val isFindPolygonAuth =
       userGroups.any { it.group.id == userRepository.polygonGroup().id }
