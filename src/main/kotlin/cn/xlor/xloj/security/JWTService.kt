@@ -14,16 +14,21 @@ class JWTService {
 
   private val logger by LoggerDelegate()
 
-  @Value("\${secret}")
+  @Value("\${jwt.secret}")
   lateinit var secret: String
 
+  @Value("\${jwt.expiration}")
+  lateinit var injectExpiration: String
+
   val key: SecretKey get() = Keys.hmacShaKeyFor(secret.encodeToByteArray())
+
+  val expiration: Long get() = injectExpiration.toLong()
 
   fun create(username: String): String {
     return Jwts.builder()
       .setSubject(username)
       .setIssuedAt(Date())
-      .setExpiration(Date(Date().time + 60000))
+      .setExpiration(Date(Date().time + expiration))
       .signWith(key)
       .compact()
   }

@@ -7,4 +7,6 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
-secret: whgwhg66666666666666666666666666
+jwt:
+  secret: whgwhg66666666666666666666666666
+  expiration: 2592000000 # 30 days
