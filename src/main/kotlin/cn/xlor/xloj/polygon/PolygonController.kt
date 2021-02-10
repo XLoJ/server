@@ -1,14 +1,26 @@
 package cn.xlor.xloj.polygon
 
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import cn.xlor.xloj.model.Problem
+import cn.xlor.xloj.model.UserProfile
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/polygon")
-class PolygonController {
+class PolygonController(
+  private val polygonService: PolygonService
+) {
   @GetMapping("/problems")
-  fun getAllProblems(): String {
-    return "problems"
+  fun getAllProblems(@RequestAttribute user: UserProfile): List<Problem> {
+    return polygonService.findUserProblemList(user.id)
+  }
+
+  @PostMapping("/problem")
+  fun createProblem() {
+
+  }
+
+  @GetMapping("/problem/{pid}")
+  fun findProblem(): String {
+    return "problem"
   }
 }

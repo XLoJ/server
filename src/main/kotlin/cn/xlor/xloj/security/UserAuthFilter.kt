@@ -3,6 +3,7 @@ package cn.xlor.xloj.security
 import cn.xlor.xloj.model.toUserProfile
 import cn.xlor.xloj.repository.UserRepository
 import cn.xlor.xloj.utils.LoggerDelegate
+import org.springframework.http.HttpHeaders
 import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
@@ -25,7 +26,7 @@ class UserAuthFilter(
     chain: FilterChain
   ) {
     val req = request as HttpServletRequest
-    val auth = req.getHeader("Authorization")
+    val auth = req.getHeader(HttpHeaders.AUTHORIZATION)
 
     if (auth != null) {
       val optionalUsername = jwtService.verify(auth)
