@@ -1,1 +1,3 @@
-secret: testtesttesttesttesttesttesttest
+jwt:
+  secret: whgwhg66666666666666666666666666
+  expiration: 2592000000 # 30 days
