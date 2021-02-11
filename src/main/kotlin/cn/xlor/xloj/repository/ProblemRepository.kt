@@ -1,17 +1,17 @@
 package cn.xlor.xloj.repository
 
-import cn.xlor.xloj.model.Problem
-import cn.xlor.xloj.model.Problems
-import cn.xlor.xloj.model.problems
-import cn.xlor.xloj.model.userProblems
+import cn.xlor.xloj.model.*
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
+import org.ktorm.dsl.insert
+import org.ktorm.dsl.insertAndGenerateKey
 import org.ktorm.dsl.update
 import org.ktorm.entity.filter
 import org.ktorm.entity.find
 import org.ktorm.entity.map
 import org.ktorm.entity.toList
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
 class ProblemRepository(
@@ -30,6 +30,25 @@ class ProblemRepository(
     val accessProblemList =
       database.userProblems.filter { it.uid eq uid }.map { it.problem }.toList()
     return (createProblemList + accessProblemList).sortedByDescending { it.updateTime }
+  }
+
+  /**
+   * Create a new classic problem
+   *
+   * Return: [Long] the primary key of new problem in Table Problems
+   */
+  @Transactional
+  fun createClassicProblem(name: String, creatorId: Long): Long {
+    val id = database.insertAndGenerateKey(Problems) {
+      set(it.creatorId, creatorId)
+      set(it.title, name)
+      set(it.problemType, "classic")
+    } as Long
+    database.insert(ClassicProblems) {
+      set(it.parent, id)
+      set(it.name, name)
+    }
+    return id
   }
 
   fun updateProblemInfo(problem: Problem) {

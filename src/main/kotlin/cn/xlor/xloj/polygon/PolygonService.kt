@@ -13,6 +13,12 @@ class PolygonService(
     return problemRepository.findUserProblemList(uid)
   }
 
+  fun createClassicProblem(name: String, creatorId: Long): Problem {
+    val newProblemId =
+      problemRepository.createClassicProblem(name, creatorId)
+    return problemRepository.findProblemById(newProblemId)!!
+  }
+
   fun updateProblemInfo(
     problem: Problem,
     updateProblemDto: UpdateProblemDto

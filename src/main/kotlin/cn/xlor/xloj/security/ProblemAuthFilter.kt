@@ -22,8 +22,9 @@ class ProblemAuthFilter(
     val userProfile =
       req.getAttribute(UserAttributeKey) as UserProfile
     val requestURIList = req.requestURI.split("/")
-    assert(requestURIList.size > 3)
-    if (requestURIList[3] == "") {
+
+    if (requestURIList.size == 3 || requestURIList[3] == "") {
+      // skip POST /polygon/problem
       chain.doFilter(request, response)
     } else {
       if (requestURIList[3].toLongOrNull() != null) {
