@@ -42,4 +42,17 @@ class SecurityFilterFactory(
     filterRegistrationBean.urlPatterns = listOf("/polygon/problem/*")
     return filterRegistrationBean
   }
+
+  @Bean
+  fun ensureProblemTypeFilter(): FilterRegistrationBean<Filter> {
+    val filterRegistrationBean = FilterRegistrationBean<Filter>()
+    filterRegistrationBean.setName("classicProblemTypeFilter")
+    filterRegistrationBean.order = 4
+    filterRegistrationBean.filter = EnsureProblemTypeFilter(
+      "classic",
+      listOf("checker", "validator", "solution", "generator")
+    )
+    filterRegistrationBean.urlPatterns = listOf("/polygon/problem/*")
+    return filterRegistrationBean
+  }
 }
