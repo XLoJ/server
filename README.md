@@ -11,6 +11,10 @@ A demo for XLoJ.
    ├── {version}_checker
    ├── {version}_validator
    ├── {version}_solution
+   ├── static
+   │  ├─ input1
+   │  ├─ input2
+   │  └─ input3
    └── testcases
       ├── {version}
       │  ├─ 1

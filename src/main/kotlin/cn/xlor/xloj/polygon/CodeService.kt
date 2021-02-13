@@ -43,7 +43,7 @@ class CodeService(
       codeRepository.updateCode(checkerId, uploadCodeDto, checker.version + 1)
       codeRepository.findCodeById(checkerId)!!
     }
-    minIOService.uploadCodeToMinIO(classicProblem, checker)
+    minIOService.uploadCodeToMinIO(problem.id, classicProblem, checker)
     return checker
   }
 
@@ -89,7 +89,7 @@ class CodeService(
       )
       codeRepository.findCodeById(validatorId)!!
     }
-    minIOService.uploadCodeToMinIO(classicProblem, validator)
+    minIOService.uploadCodeToMinIO(problem.id, classicProblem, validator)
     return validator
   }
 
@@ -130,7 +130,7 @@ class CodeService(
       codeRepository.updateCode(solutionId, uploadCodeDto, solution.version + 1)
       codeRepository.findCodeById(solutionId)!!
     }
-    minIOService.uploadCodeToMinIO(classicProblem, solution)
+    minIOService.uploadCodeToMinIO(problem.id, classicProblem, solution)
     return solution
   }
 
