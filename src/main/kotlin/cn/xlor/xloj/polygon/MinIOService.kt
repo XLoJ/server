@@ -23,7 +23,6 @@ class MinIOService(
         "body": "${classicProblemCode.body}"
       }
     """.trimIndent()
-    println(file)
     minIOUtils.uploadFile(ProblemBucketName, fileName, file.byteInputStream())
   }
 }
