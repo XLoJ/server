@@ -8,5 +8,10 @@ spring:
     password: ${DB_PASSWORD}
 
 jwt:
-  secret: whgwhg66666666666666666666666666
+  secret: ${JWT_SECRET}
   expiration: 2592000000 # 30 days
+
+minio:
+  url: ${minio_url:http://localhost:9000}
+  accessKey: ${minio_acccesskey:accessKey}
+  secretKey: ${minio_serectkey:secretKey}

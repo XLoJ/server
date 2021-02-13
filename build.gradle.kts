@@ -37,6 +37,7 @@ dependencies {
   implementation("org.ktorm:ktorm-jackson:3.3.0")
   implementation("org.ktorm:ktorm-support-postgresql:3.3.0")
   implementation("org.mindrot:jbcrypt:0.4")
+  implementation("io.minio:minio:8.0.3")
   compileOnly("io.jsonwebtoken:jjwt-api:0.11.2")
   runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
   runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
