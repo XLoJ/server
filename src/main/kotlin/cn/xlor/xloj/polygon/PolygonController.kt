@@ -1,5 +1,6 @@
 package cn.xlor.xloj.polygon
 
+import cn.xlor.xloj.exception.NotFoundException
 import cn.xlor.xloj.model.ClassicProblemCode
 import cn.xlor.xloj.model.Problem
 import cn.xlor.xloj.model.UserProfile
@@ -31,10 +32,10 @@ class PolygonController(
         polygonService.createClassicProblem(createProblemDto.name, user.id)
       }
       "hdu" -> {
-        throw RuntimeException("不支持题目类型 \"$type\"")
+        throw NotFoundException("不支持题目类型 \"$type\"")
       }
       else -> {
-        throw RuntimeException("不支持题目类型 \"$type\"")
+        throw NotFoundException("不支持题目类型 \"$type\"")
       }
     }
   }
