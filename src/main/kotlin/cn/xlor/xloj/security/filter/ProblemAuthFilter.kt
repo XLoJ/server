@@ -1,4 +1,4 @@
-package cn.xlor.xloj.security
+package cn.xlor.xloj.security.filter
 
 import cn.xlor.xloj.ProblemAttributeKey
 import cn.xlor.xloj.UserAttributeKey

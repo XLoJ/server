@@ -1,8 +1,9 @@
-package cn.xlor.xloj.security
+package cn.xlor.xloj.security.filter
 
 import cn.xlor.xloj.UserAttributeKey
 import cn.xlor.xloj.model.toUserProfile
 import cn.xlor.xloj.repository.UserRepository
+import cn.xlor.xloj.security.JWTService
 import cn.xlor.xloj.utils.LoggerDelegate
 import org.springframework.http.HttpHeaders
 import javax.servlet.Filter
