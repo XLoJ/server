@@ -20,7 +20,7 @@ class StartedListener(
     try {
       initMinio()
     } catch (e: Exception) {
-      logger.info("minio init fail!")
+      logger.error("minio init fail!")
     }
   }
 
