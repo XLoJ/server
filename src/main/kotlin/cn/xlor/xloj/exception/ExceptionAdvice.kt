@@ -99,4 +99,13 @@ class ExceptionAdvice {
   fun handleIncorrectPassword(exception: IncorrectPasswordException): ResponseEntity<IncorrectPasswordExceptionResponse> {
     return makeResponseEntity(IncorrectPasswordExceptionResponse(exception.username))
   }
+
+  @ExceptionHandler(NotFoundException::class)
+  fun handleNotFound(exception: NotFoundException): ResponseEntity<NotFoundExceptionResponse> {
+    return makeResponseEntity(
+      NotFoundExceptionResponse(
+        exception.message ?: "Unknown"
+      )
+    )
+  }
 }

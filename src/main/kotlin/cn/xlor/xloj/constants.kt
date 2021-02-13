@@ -13,3 +13,5 @@ const val UserAttributeKey = "user"
  * Value type: [cn.xlor.xloj.model.Problem]
  */
 const val ProblemAttributeKey = "problem"
+
+const val ProblemBucketName = "problems"

@@ -3,11 +3,11 @@ package cn.xlor.xloj.utils
 import cn.xlor.xloj.configuration.MinioConfiguration
 import io.minio.*
 import io.minio.messages.DeleteObject
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import java.io.BufferedReader
 import java.io.InputStream
 
-@Service
+@Component
 class MinIOUtils(
   val minioConfiguration: MinioConfiguration
 ) {

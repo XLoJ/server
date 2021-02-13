@@ -1,16 +1,19 @@
 package cn.xlor.xloj.polygon
 
+import cn.xlor.xloj.model.ClassicProblemCode
 import cn.xlor.xloj.model.Problem
 import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.polygon.dto.CreateProblemDto
 import cn.xlor.xloj.polygon.dto.UpdateProblemDto
+import cn.xlor.xloj.polygon.dto.UploadCodeDto
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
 @RequestMapping("/polygon")
 class PolygonController(
-  private val polygonService: PolygonService
+  private val polygonService: PolygonService,
+  private val codeService: CodeService
 ) {
   @GetMapping("/problems")
   fun getAllProblems(@RequestAttribute user: UserProfile): List<Problem> {
@@ -47,5 +50,65 @@ class PolygonController(
     @Valid @RequestBody updateProblemDto: UpdateProblemDto
   ): Problem {
     return polygonService.updateProblemInfo(problem, updateProblemDto)
+  }
+
+  @GetMapping("/problem/{pid}/checker")
+  fun findChecker(@RequestAttribute problem: Problem): ClassicProblemCode {
+    return codeService.findChecker(problem)
+  }
+
+  @PostMapping("/problem/{pid}/checker")
+  fun uploadChecker(
+    @RequestAttribute problem: Problem,
+    @Valid @RequestBody uploadCodeDto: UploadCodeDto
+  ): ClassicProblemCode {
+    return codeService.uploadChecker(problem, uploadCodeDto)
+  }
+
+  @GetMapping("/problem/{pid}/validator")
+  fun findValidator(@RequestAttribute problem: Problem): ClassicProblemCode {
+    return codeService.findValidator(problem)
+  }
+
+  @PostMapping("/problem/{pid}/validator")
+  fun uploadValidator(
+    @RequestAttribute problem: Problem,
+    @Valid @RequestBody uploadCodeDto: UploadCodeDto
+  ): ClassicProblemCode {
+    return codeService.uploadValidator(problem, uploadCodeDto)
+  }
+
+  @GetMapping("/problem/{pid}/solution")
+  fun findSolution(@RequestAttribute problem: Problem): ClassicProblemCode {
+    return codeService.findSolution(problem)
+  }
+
+  @PostMapping("/problem/{pid}/solution")
+  fun uploadSolution(
+    @RequestAttribute problem: Problem,
+    @Valid @RequestBody uploadCodeDto: UploadCodeDto
+  ): ClassicProblemCode {
+    return codeService.uploadSolution(problem, uploadCodeDto)
+  }
+
+  @PostMapping("/problem/{pid}/generator")
+  fun uploadGenerator(
+    @RequestAttribute problem: Problem,
+    @Valid @RequestBody uploadCodeDto: UploadCodeDto
+  ) {
+
+  }
+
+  @PutMapping("/problem/{pid}/generator/{cid}")
+  fun updateGenerator(
+    @RequestAttribute problem: Problem,
+    @Valid @RequestBody uploadCodeDto: UploadCodeDto
+  ) {
+
+  }
+
+  @DeleteMapping("/problem/{pid}/generator/{cid}")
+  fun deleteGenerator(@RequestAttribute problem: Problem) {
+
   }
 }
