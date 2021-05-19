@@ -1,13 +1,16 @@
 package cn.xlor.xloj.polygon
 
+import cn.xlor.xloj.model.ClassicProblem
 import cn.xlor.xloj.model.Problem
 import cn.xlor.xloj.polygon.dto.UpdateProblemDto
+import cn.xlor.xloj.repository.ClassicProblemRepository
 import cn.xlor.xloj.repository.ProblemRepository
 import org.springframework.stereotype.Service
 
 @Service
 class PolygonService(
-  private val problemRepository: ProblemRepository
+  private val problemRepository: ProblemRepository,
+  private val classicProblemRepository: ClassicProblemRepository
 ) {
   fun findUserProblemList(uid: Long): List<Problem> {
     return problemRepository.findUserProblemList(uid)
@@ -17,6 +20,10 @@ class PolygonService(
     val newProblemId =
       problemRepository.createClassicProblem(name, creatorId)
     return problemRepository.findProblemById(newProblemId)!!
+  }
+
+  fun findClassicProblem(parentId: Long): ClassicProblem {
+    return classicProblemRepository.findClassicProblemByParentId(parentId)
   }
 
   fun updateProblemInfo(

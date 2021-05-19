@@ -1,6 +1,7 @@
 package cn.xlor.xloj.polygon
 
 import cn.xlor.xloj.exception.NotFoundException
+import cn.xlor.xloj.model.ClassicProblem
 import cn.xlor.xloj.model.ClassicProblemCode
 import cn.xlor.xloj.model.Problem
 import cn.xlor.xloj.model.UserProfile
@@ -43,6 +44,11 @@ class PolygonController(
   @GetMapping("/problem/{pid}")
   fun findProblem(@RequestAttribute problem: Problem): Problem {
     return problem
+  }
+
+  @GetMapping("/problem/{pid}/classic")
+  fun findClassicProblem(@RequestAttribute problem: Problem): ClassicProblem {
+    return polygonService.findClassicProblem(problem.id)
   }
 
   @PutMapping("/problem/{pid}")
@@ -110,6 +116,21 @@ class PolygonController(
 
   @DeleteMapping("/problem/{pid}/generator/{cid}")
   fun deleteGenerator(@RequestAttribute problem: Problem) {
+
+  }
+
+  @PostMapping("/problem/{pid}/testcases")
+  fun setTestcases(@RequestAttribute problem: Problem) {
+
+  }
+
+  @GetMapping("/problem/{pid}/static")
+  fun findStaticFile(@RequestAttribute problem: Problem) {
+
+  }
+
+  @PostMapping("/problem/{pid}/static")
+  fun uploadStaticFile(@RequestAttribute problem: Problem) {
 
   }
 }
