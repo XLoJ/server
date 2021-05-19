@@ -5,10 +5,7 @@ import cn.xlor.xloj.model.ClassicProblem
 import cn.xlor.xloj.model.ClassicProblemCode
 import cn.xlor.xloj.model.Problem
 import cn.xlor.xloj.model.UserProfile
-import cn.xlor.xloj.polygon.dto.CreateProblemDto
-import cn.xlor.xloj.polygon.dto.UpdateProblemDto
-import cn.xlor.xloj.polygon.dto.UpdateTestcasesDto
-import cn.xlor.xloj.polygon.dto.UploadCodeDto
+import cn.xlor.xloj.polygon.dto.*
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -48,8 +45,8 @@ class PolygonController(
   }
 
   @GetMapping("/problem/{pid}/classic")
-  fun findClassicProblem(@RequestAttribute problem: Problem): ClassicProblem {
-    return polygonService.findClassicProblem(problem.id)
+  fun findClassicProblem(@RequestAttribute problem: Problem): DetailClassicProblem {
+    return polygonService.findDetailClassicProblem(problem.id)
   }
 
   @PutMapping("/problem/{pid}")

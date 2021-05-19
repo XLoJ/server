@@ -2,13 +2,16 @@ package cn.xlor.xloj.polygon
 
 import cn.xlor.xloj.model.ClassicProblem
 import cn.xlor.xloj.model.Problem
+import cn.xlor.xloj.polygon.dto.DetailClassicProblem
 import cn.xlor.xloj.polygon.dto.UpdateProblemDto
 import cn.xlor.xloj.repository.ClassicProblemRepository
+import cn.xlor.xloj.repository.CodeRepository
 import cn.xlor.xloj.repository.ProblemRepository
 import org.springframework.stereotype.Service
 
 @Service
 class PolygonService(
+  private val codeRepository: CodeRepository,
   private val problemRepository: ProblemRepository,
   private val classicProblemRepository: ClassicProblemRepository
 ) {
@@ -22,8 +25,43 @@ class PolygonService(
     return problemRepository.findProblemById(newProblemId)!!
   }
 
-  fun findClassicProblem(parentId: Long): ClassicProblem {
-    return classicProblemRepository.findClassicProblemByParentId(parentId)
+  fun findDetailClassicProblem(parentId: Long): DetailClassicProblem {
+    val classicProblem =
+      classicProblemRepository.findClassicProblemByParentId(parentId)
+    return DetailClassicProblem(
+      classicProblem.id,
+      classicProblem.parent,
+      classicProblem.name,
+      classicProblem.status,
+      if (classicProblem.checker != null) {
+        codeRepository.findCodeByCPId(
+          classicProblem.id,
+          classicProblem.checker!!
+        )
+      } else {
+        null
+      },
+      if (classicProblem.validator != null) {
+        codeRepository.findCodeByCPId(
+          classicProblem.id,
+          classicProblem.validator!!
+        )
+      } else {
+        null
+      },
+      if (classicProblem.solution != null) {
+        codeRepository.findCodeByCPId(
+          classicProblem.id,
+          classicProblem.solution!!
+        )
+      } else {
+        null
+      },
+      classicProblem.testcases,
+      classicProblem.version,
+      classicProblem.createTime,
+      classicProblem.updateTime
+    )
   }
 
   fun updateProblemInfo(

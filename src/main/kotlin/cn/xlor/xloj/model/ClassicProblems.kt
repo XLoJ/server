@@ -23,7 +23,7 @@ interface ClassicProblem : Entity<ClassicProblem> {
 
   var solution: Long?
 
-  var testcases: String?
+  var testcases: String
 
   var version: Int
 
