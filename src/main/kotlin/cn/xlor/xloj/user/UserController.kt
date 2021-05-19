@@ -3,6 +3,7 @@ package cn.xlor.xloj.user
 import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.user.dto.UserLoginDto
 import cn.xlor.xloj.user.dto.UserRegisterDto
+import cn.xlor.xloj.user.dto.UserRoleProfile
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -32,7 +33,12 @@ class UserController(
    * Get user profile.
    */
   @GetMapping("/profile")
-  fun getMyProfile(@RequestAttribute user: UserProfile): UserProfile {
-    return user
+  fun getMyProfile(@RequestAttribute user: UserProfile): UserRoleProfile {
+    return UserRoleProfile(
+      user.id,
+      user.username,
+      user.nickname,
+      userService.findUserGroups(user.id)
+    )
   }
 }
