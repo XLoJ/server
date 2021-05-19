@@ -32,6 +32,7 @@ object ClassicProblemCodes :
   Table<ClassicProblemCode>("classic_problem__codes") {
   val id = long("id").primaryKey().bindTo { it.id }
 
+  // Join to Classic problem ID
   val parent = long("parent").bindTo { it.parent }
 
   val type = text("type").bindTo { it.type }

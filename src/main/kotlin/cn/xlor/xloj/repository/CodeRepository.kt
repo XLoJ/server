@@ -2,13 +2,10 @@ package cn.xlor.xloj.repository
 
 import cn.xlor.xloj.model.ClassicProblemCode
 import cn.xlor.xloj.model.ClassicProblemCodes
-import cn.xlor.xloj.model.ClassicProblems
 import cn.xlor.xloj.model.classicProblemCodes
 import cn.xlor.xloj.polygon.dto.UploadCodeDto
 import org.ktorm.database.Database
-import org.ktorm.dsl.eq
-import org.ktorm.dsl.insertAndGenerateKey
-import org.ktorm.dsl.update
+import org.ktorm.dsl.*
 import org.ktorm.entity.find
 import org.springframework.stereotype.Repository
 
@@ -18,6 +15,10 @@ class CodeRepository(
 ) {
   fun findCodeById(cid: Long): ClassicProblemCode? {
     return database.classicProblemCodes.find { it.id eq cid }
+  }
+
+  fun findCodeByCPId(cpid: Long, cid: Long): ClassicProblemCode? {
+    return database.classicProblemCodes.find { (it.id eq cid) and (it.parent eq cpid) }
   }
 
   fun uploadCode(cpid: Long, type: String, uploadCodeDto: UploadCodeDto): Long {
@@ -42,24 +43,9 @@ class CodeRepository(
     }
   }
 
-  fun setProblemChecker(cpid: Long, cid: Long) {
-    database.update(ClassicProblems) {
-      set(it.checker, cid)
-      where { it.id eq cpid }
-    }
-  }
-
-  fun setProblemValidator(cpid: Long, cid: Long) {
-    database.update(ClassicProblems) {
-      set(it.validator, cid)
-      where { it.id eq cpid }
-    }
-  }
-
-  fun setProblemSolution(cpid: Long, cid: Long) {
-    database.update(ClassicProblems) {
-      set(it.solution, cid)
-      where { it.id eq cpid }
+  fun removeCode(cid: Long) {
+    database.delete(ClassicProblemCodes) {
+      it.id eq cid
     }
   }
 }

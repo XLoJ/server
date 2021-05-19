@@ -41,4 +41,14 @@ class PolygonService(
     problemRepository.updateProblemInfo(problem)
     return problem
   }
+
+  fun updateClassicProblemTestcases(
+    classicProblem: ClassicProblem,
+    testcases: String
+  ) {
+    classicProblemRepository.updateClassicProblemTestcases(
+      classicProblem.id,
+      testcases
+    )
+  }
 }

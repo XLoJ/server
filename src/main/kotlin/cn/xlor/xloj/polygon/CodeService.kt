@@ -8,7 +8,6 @@ import cn.xlor.xloj.polygon.dto.UploadCodeDto
 import cn.xlor.xloj.repository.ClassicProblemRepository
 import cn.xlor.xloj.repository.CodeRepository
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class CodeService(
@@ -16,14 +15,13 @@ class CodeService(
   private val classicProblemRepository: ClassicProblemRepository,
   private val minIOService: MinIOService
 ) {
-  @Transactional
-  fun uploadCheckerToDatabase(
+  private fun uploadCheckerToDatabase(
     problem: ClassicProblem,
     uploadCodeDto: UploadCodeDto
   ): Long {
     val cid =
       codeRepository.uploadCode(problem.id, "checker", uploadCodeDto)
-    codeRepository.setProblemChecker(problem.id, cid)
+    classicProblemRepository.setClassicProblemChecker(problem.id, cid)
     return cid
   }
 
@@ -54,18 +52,17 @@ class CodeService(
     if (checkerId != null) {
       return codeRepository.findCodeById(checkerId)!!
     } else {
-      throw NotFoundException("题目 \"${classicProblem.id}-${classicProblem.name}\" 尚未设置 checker")
+      throw NotFoundException("题目 \"${problem.id}-${classicProblem.name}\" 尚未设置 checker")
     }
   }
 
-  @Transactional
-  fun uploadValidatorToDatabase(
+  private fun uploadValidatorToDatabase(
     problem: ClassicProblem,
     uploadCodeDto: UploadCodeDto
   ): Long {
     val cid =
       codeRepository.uploadCode(problem.id, "validator", uploadCodeDto)
-    codeRepository.setProblemValidator(problem.id, cid)
+    classicProblemRepository.setClassicProblemValidator(problem.id, cid)
     return cid
   }
 
@@ -104,13 +101,12 @@ class CodeService(
     }
   }
 
-  @Transactional
-  fun uploadSolutionToDatabase(
+  private fun uploadSolutionToDatabase(
     problem: ClassicProblem,
     uploadCodeDto: UploadCodeDto
   ): Long {
     val cid = codeRepository.uploadCode(problem.id, "solution", uploadCodeDto)
-    codeRepository.setProblemSolution(problem.id, cid)
+    classicProblemRepository.setClassicProblemSolution(problem.id, cid)
     return cid
   }
 
@@ -143,5 +139,48 @@ class CodeService(
     } else {
       throw NotFoundException("题目 \"${classicProblem.id}-${classicProblem.name}\" 尚未设置正确 solution")
     }
+  }
+
+  private fun uploadGeneratorToDatabase(
+    problem: ClassicProblem,
+    uploadCodeDto: UploadCodeDto
+  ): Long {
+    return codeRepository.uploadCode(problem.id, "generator", uploadCodeDto)
+  }
+
+  fun uploadGenerator(
+    problem: Problem,
+    uploadCodeDto: UploadCodeDto
+  ): ClassicProblemCode {
+    val classicProblem =
+      classicProblemRepository.findClassicProblemByParentId(problem.id)
+    val newGeneratorId =
+      uploadGeneratorToDatabase(classicProblem, uploadCodeDto)
+    val generator = codeRepository.findCodeById(newGeneratorId)!!
+    minIOService.uploadCodeToMinIO(problem.id, classicProblem, generator)
+    return generator
+  }
+
+  fun updateGenerator(
+    problem: Problem,
+    generatorId: Long,
+    uploadCodeDto: UploadCodeDto
+  ): ClassicProblemCode {
+    val classicProblem =
+      classicProblemRepository.findClassicProblemByParentId(problem.id)
+    val generator =
+      codeRepository.findCodeByCPId(classicProblem.id, generatorId)
+        ?: throw NotFoundException("题目 \"${problem.id}-${classicProblem.name}\" 没有 id 为 \"${generatorId}\" 的 Generator")
+    codeRepository.updateCode(generatorId, uploadCodeDto, generator.version + 1)
+    minIOService.uploadCodeToMinIO(problem.id, classicProblem, generator)
+    return codeRepository.findCodeById(generatorId)!!
+  }
+
+  fun removeGenerator(problem: Problem, generatorId: Long) {
+    val classicProblem =
+      classicProblemRepository.findClassicProblemByParentId(problem.id)
+    codeRepository.findCodeByCPId(classicProblem.id, generatorId)
+      ?: throw NotFoundException("题目 \"${problem.id}-${classicProblem.name}\" 没有 id 为 \"${generatorId}\" 的 Generator")
+    codeRepository.removeCode(generatorId)
   }
 }

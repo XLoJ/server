@@ -102,21 +102,25 @@ class PolygonController(
   fun uploadGenerator(
     @RequestAttribute problem: Problem,
     @Valid @RequestBody uploadCodeDto: UploadCodeDto
-  ) {
-
+  ): ClassicProblemCode {
+    return codeService.uploadGenerator(problem, uploadCodeDto)
   }
 
   @PutMapping("/problem/{pid}/generator/{cid}")
   fun updateGenerator(
     @RequestAttribute problem: Problem,
-    @Valid @RequestBody uploadCodeDto: UploadCodeDto
-  ) {
-
+    @Valid @RequestBody uploadCodeDto: UploadCodeDto,
+    @RequestParam cid: Long
+  ): ClassicProblemCode {
+    return codeService.updateGenerator(problem, cid, uploadCodeDto)
   }
 
   @DeleteMapping("/problem/{pid}/generator/{cid}")
-  fun deleteGenerator(@RequestAttribute problem: Problem) {
-
+  fun removeGenerator(
+    @RequestAttribute problem: Problem,
+    @RequestParam cid: Long
+  ) {
+    return codeService.removeGenerator(problem, cid)
   }
 
   @PostMapping("/problem/{pid}/testcases")
@@ -131,6 +135,16 @@ class PolygonController(
 
   @PostMapping("/problem/{pid}/static")
   fun uploadStaticFile(@RequestAttribute problem: Problem) {
+
+  }
+
+  @DeleteMapping("/problem/{pid}/static")
+  fun removeStaticFile(@RequestAttribute problem: Problem) {
+
+  }
+
+  @PostMapping("/problem/{pid}/build")
+  fun buildProblem(@RequestAttribute problem: Problem) {
 
   }
 }

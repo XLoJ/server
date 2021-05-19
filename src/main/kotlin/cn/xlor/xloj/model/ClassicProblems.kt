@@ -23,6 +23,8 @@ interface ClassicProblem : Entity<ClassicProblem> {
 
   var solution: Long?
 
+  var testcases: String?
+
   var version: Int
 
   val createTime: Instant
@@ -44,6 +46,8 @@ object ClassicProblems : Table<ClassicProblem>("classic_problems") {
   val validator = long("validator").bindTo { it.validator }
 
   val solution = long("solution").bindTo { it.solution }
+
+  val testcases = text("testcases").bindTo { it.testcases }
 
   val version = int("version").bindTo { it.version }
 
