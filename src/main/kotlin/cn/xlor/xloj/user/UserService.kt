@@ -2,7 +2,7 @@ package cn.xlor.xloj.user
 
 import cn.xlor.xloj.exception.IncorrectPasswordException
 import cn.xlor.xloj.exception.UnknownUserException
-import cn.xlor.xloj.model.UserGroup
+import cn.xlor.xloj.model.Group
 import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.model.toUserProfile
 import cn.xlor.xloj.repository.UserRepository
@@ -39,7 +39,7 @@ class UserService(
     userRepository.createUser(userRegisterDto)
   }
 
-  fun findUserGroups(uid: Long): List<UserGroup> {
-    return userRepository.findUserGroups(uid)
+  fun findUserGroups(uid: Long): List<Group> {
+    return userRepository.findUserGroups(uid).map { it.group }
   }
 }
