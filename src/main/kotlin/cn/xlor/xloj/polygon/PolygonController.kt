@@ -7,6 +7,7 @@ import cn.xlor.xloj.model.Problem
 import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.polygon.dto.CreateProblemDto
 import cn.xlor.xloj.polygon.dto.UpdateProblemDto
+import cn.xlor.xloj.polygon.dto.UpdateTestcasesDto
 import cn.xlor.xloj.polygon.dto.UploadCodeDto
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -124,8 +125,14 @@ class PolygonController(
   }
 
   @PostMapping("/problem/{pid}/testcases")
-  fun setTestcases(@RequestAttribute problem: Problem) {
-
+  fun setTestcases(
+    @RequestAttribute problem: Problem,
+    @Valid @RequestBody updateTestcasesDto: UpdateTestcasesDto
+  ): ClassicProblem {
+    return polygonService.updateClassicProblemTestcases(
+      problem,
+      updateTestcasesDto.testcases
+    )
   }
 
   @GetMapping("/problem/{pid}/static")

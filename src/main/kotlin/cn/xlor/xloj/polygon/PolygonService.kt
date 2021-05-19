@@ -43,12 +43,16 @@ class PolygonService(
   }
 
   fun updateClassicProblemTestcases(
-    classicProblem: ClassicProblem,
+    problem: Problem,
     testcases: String
-  ) {
+  ): ClassicProblem {
+    val classicProblem =
+      classicProblemRepository.findClassicProblemByParentId(problem.id)
+    classicProblem.testcases = testcases
     classicProblemRepository.updateClassicProblemTestcases(
       classicProblem.id,
       testcases
     )
+    return classicProblem
   }
 }
