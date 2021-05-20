@@ -16,7 +16,7 @@ class PolygonController(
   private val codeService: CodeService
 ) {
   @GetMapping("/problems")
-  fun getAllProblems(@RequestAttribute user: UserProfile): List<Problem> {
+  fun getAllProblems(@RequestAttribute user: UserProfile): List<ProblemListItem> {
     return polygonService.findUserProblemList(user.id)
   }
 

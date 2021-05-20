@@ -3,6 +3,7 @@ package cn.xlor.xloj.polygon
 import cn.xlor.xloj.model.ClassicProblem
 import cn.xlor.xloj.model.Problem
 import cn.xlor.xloj.polygon.dto.DetailClassicProblem
+import cn.xlor.xloj.polygon.dto.ProblemListItem
 import cn.xlor.xloj.polygon.dto.UpdateProblemDto
 import cn.xlor.xloj.repository.ClassicProblemRepository
 import cn.xlor.xloj.repository.CodeRepository
@@ -15,8 +16,16 @@ class PolygonService(
   private val problemRepository: ProblemRepository,
   private val classicProblemRepository: ClassicProblemRepository
 ) {
-  fun findUserProblemList(uid: Long): List<Problem> {
-    return problemRepository.findUserProblemList(uid)
+  fun findUserProblemList(uid: Long): List<ProblemListItem> {
+    return problemRepository.findUserProblemList(uid).map { it ->
+      val classicProblem =
+        classicProblemRepository.findClassicProblemByParentId(it.id)
+      if (classicProblem != null) {
+        ProblemListItem(it.id, classicProblem.name, it.creatorId)
+      } else {
+        null
+      }
+    }.filterNotNull()
   }
 
   fun createClassicProblem(name: String, creatorId: Long): Problem {
@@ -31,10 +40,11 @@ class PolygonService(
     return DetailClassicProblem(
       classicProblem.id,
       classicProblem.parent,
+      classicProblem.status,
       classicProblem.name,
       problem.timeLimit,
       problem.memoryLimit,
-      classicProblem.status,
+      problem.tags,
       if (classicProblem.checker != null) {
         codeRepository.findCodeByCPId(
           classicProblem.id,
