@@ -41,11 +41,15 @@ class MinIOUtils(
     return client().putObject(args)
   }
 
-  fun getFile(bucketName: String, fileName: String): String {
+  fun getFileToStream(bucketName: String, fileName: String): BufferedReader {
     val args =
       GetObjectArgs.builder().bucket(bucketName).`object`(fileName).build()
     val getObjectResponse = client().getObject(args)
-    return getObjectResponse.bufferedReader().use(BufferedReader::readText)
+    return getObjectResponse.bufferedReader()
+  }
+
+  fun getFile(bucketName: String, fileName: String): String {
+    return getFileToStream(bucketName, fileName).use(BufferedReader::readText)
   }
 
   fun getFileTags(bucketName: String, fileName: String): Map<String, String?> {
@@ -55,10 +59,20 @@ class MinIOUtils(
     return objectTags.get()
   }
 
+  fun listFilename(bucketName: String, prefix: String): List<String> {
+    val args =
+      ListObjectsArgs.builder().bucket(bucketName).prefix(prefix).build()
+    return client().listObjects(args).map { it.get().objectName() }
+  }
+
   fun removeFiles(bucketName: String, files: List<String>) {
     val objects = files.map { DeleteObject(it) }
     val args =
       RemoveObjectsArgs.builder().bucket(bucketName).objects(objects).build()
     client().removeObjects(args)
+  }
+
+  fun removeFile(bucketName: String, file: String) {
+    removeFiles(bucketName, listOf(file))
   }
 }

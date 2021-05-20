@@ -7,13 +7,17 @@ import cn.xlor.xloj.model.Problem
 import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.polygon.dto.*
 import org.springframework.web.bind.annotation.*
+import java.io.BufferedReader
+import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
+
 
 @RestController
 @RequestMapping("/polygon")
 class PolygonController(
   private val polygonService: PolygonService,
-  private val codeService: CodeService
+  private val codeService: CodeService,
+  private val staticFileService: StaticFileService
 ) {
   @GetMapping("/problems")
   fun getAllProblems(@RequestAttribute user: UserProfile): List<ProblemListItem> {
@@ -133,13 +137,21 @@ class PolygonController(
   }
 
   @GetMapping("/problem/{pid}/static")
-  fun findStaticFile(@RequestAttribute problem: Problem) {
-
+  fun findAllStaticFile(@RequestAttribute problem: Problem): List<StaticFileSummary> {
+    return staticFileService.getAllStaticFileSummary(problem)
   }
 
-  @PostMapping("/problem/{pid}/static")
-  fun uploadStaticFile(@RequestAttribute problem: Problem) {
-
+  @GetMapping("/problem/{pid}/static/download")
+  fun downloadStaticFile(
+    @RequestAttribute problem: Problem,
+    @RequestParam filename: String,
+    response: HttpServletResponse
+  ): String {
+    val downloadFile = staticFileService.downloadFile(problem, filename)
+    val text = downloadFile.use(BufferedReader::readText)
+    response.contentType = "text/plain;charset=UTF-8"
+    response.setHeader("Content-length", text.length.toString())
+    return text
   }
 
   @DeleteMapping("/problem/{pid}/static")
