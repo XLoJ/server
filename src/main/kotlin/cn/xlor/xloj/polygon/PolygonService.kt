@@ -25,13 +25,15 @@ class PolygonService(
     return problemRepository.findProblemById(newProblemId)!!
   }
 
-  fun findDetailClassicProblem(parentId: Long): DetailClassicProblem {
+  fun findDetailClassicProblem(problem: Problem): DetailClassicProblem {
     val classicProblem =
-      classicProblemRepository.findClassicProblemByParentId(parentId)
+      classicProblemRepository.findClassicProblemByParentId(problem.id)
     return DetailClassicProblem(
       classicProblem.id,
       classicProblem.parent,
       classicProblem.name,
+      problem.timeLimit,
+      problem.memoryLimit,
       classicProblem.status,
       if (classicProblem.checker != null) {
         codeRepository.findCodeByCPId(

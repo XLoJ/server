@@ -46,7 +46,7 @@ class PolygonController(
 
   @GetMapping("/problem/{pid}/classic")
   fun findClassicProblem(@RequestAttribute problem: Problem): DetailClassicProblem {
-    return polygonService.findDetailClassicProblem(problem.id)
+    return polygonService.findDetailClassicProblem(problem)
   }
 
   @PutMapping("/problem/{pid}")
