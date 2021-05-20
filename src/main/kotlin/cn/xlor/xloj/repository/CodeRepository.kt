@@ -25,7 +25,7 @@ class CodeRepository(
 
   fun findAllGenerators(cpid: Long): List<ClassicProblemCode> {
     return database.classicProblemCodes.filter { (it.parent eq cpid) and (it.type eq "generator") }
-      .toList()
+      .toList().sortedBy { it.id }
   }
 
   fun uploadCode(cpid: Long, type: String, uploadCodeDto: UploadCodeDto): Long {

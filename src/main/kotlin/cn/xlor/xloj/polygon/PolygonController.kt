@@ -108,7 +108,7 @@ class PolygonController(
   fun updateGenerator(
     @RequestAttribute problem: Problem,
     @Valid @RequestBody uploadCodeDto: UploadCodeDto,
-    @RequestParam cid: Long
+    @PathVariable cid: Long
   ): ClassicProblemCode {
     return codeService.updateGenerator(problem, cid, uploadCodeDto)
   }
@@ -116,7 +116,7 @@ class PolygonController(
   @DeleteMapping("/problem/{pid}/generator/{cid}")
   fun removeGenerator(
     @RequestAttribute problem: Problem,
-    @RequestParam cid: Long
+    @PathVariable cid: Long
   ) {
     return codeService.removeGenerator(problem, cid)
   }
