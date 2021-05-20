@@ -68,7 +68,6 @@ class MinIOService(
     name: String
   ) {
     val fileName = staticFilename(pid, classicProblem, name)
-    println(fileName)
     return minIOUtils.removeFile(ProblemBucketName, fileName)
   }
 

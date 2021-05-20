@@ -154,6 +154,14 @@ class PolygonController(
     return text
   }
 
+  @PostMapping("/problem/{pid}/static")
+  fun uploadStaticFile(
+    @RequestAttribute problem: Problem,
+    @Valid @RequestBody uploadStaticFileDto: UploadStaticFileDto
+  ) {
+    return staticFileService.uploadStaticFile(problem, uploadStaticFileDto)
+  }
+
   @DeleteMapping("/problem/{pid}/static")
   fun removeStaticFile(
     @RequestAttribute problem: Problem,

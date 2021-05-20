@@ -2,6 +2,7 @@ package cn.xlor.xloj.utils
 
 import cn.xlor.xloj.configuration.MinioConfiguration
 import io.minio.*
+import io.minio.messages.DeleteError
 import io.minio.messages.DeleteObject
 import org.springframework.stereotype.Component
 import java.io.BufferedReader
@@ -62,17 +63,18 @@ class MinIOUtils(
   fun listFilename(bucketName: String, prefix: String): List<String> {
     val args =
       ListObjectsArgs.builder().bucket(bucketName).prefix(prefix).build()
-    return client().listObjects(args).map { it.get().objectName() }
+    return client().listObjects(args).map { it.get() }
+      .sortedBy { it.lastModified() }.map { it.objectName() }
   }
 
-  fun removeFiles(bucketName: String, files: List<String>) {
+  fun removeFiles(bucketName: String, files: List<String>): List<DeleteError> {
     val objects = files.map { DeleteObject(it) }
     val args =
       RemoveObjectsArgs.builder().bucket(bucketName).objects(objects).build()
-    client().removeObjects(args)
+    return client().removeObjects(args).map { it.get() }
   }
 
   fun removeFile(bucketName: String, file: String) {
-    return removeFiles(bucketName, listOf(file))
+    removeFiles(bucketName, listOf(file))
   }
 }
