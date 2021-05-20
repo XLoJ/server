@@ -26,7 +26,7 @@ class MinIOService(
     val fileName = codeFilename(pid, classicProblem, classicProblemCode)
     val file = """
       {
-        "language": "${classicProblemCode.lanuage}",
+        "language": "${classicProblemCode.language}",
         "body": "${classicProblemCode.body}"
       }
     """.trimIndent()

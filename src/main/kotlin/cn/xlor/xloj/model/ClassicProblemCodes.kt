@@ -21,7 +21,7 @@ interface ClassicProblemCode : Entity<ClassicProblemCode> {
 
   var body: String
 
-  var lanuage: String
+  var language: String
 
   var description: String
 
@@ -39,7 +39,7 @@ object ClassicProblemCodes :
 
   val name = text("name").bindTo { it.name }
 
-  val language = text("language").bindTo { it.lanuage }
+  val language = text("language").bindTo { it.language }
 
   val body = text("body").bindTo { it.body }
 
