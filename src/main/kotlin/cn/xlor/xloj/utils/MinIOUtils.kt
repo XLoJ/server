@@ -73,6 +73,6 @@ class MinIOUtils(
   }
 
   fun removeFile(bucketName: String, file: String) {
-    removeFiles(bucketName, listOf(file))
+    return removeFiles(bucketName, listOf(file))
   }
 }

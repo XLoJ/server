@@ -62,6 +62,16 @@ class MinIOService(
     )
   }
 
+  fun removeStaticFileFromMinIO(
+    pid: Long,
+    classicProblem: ClassicProblem,
+    name: String
+  ) {
+    val fileName = staticFilename(pid, classicProblem, name)
+    println(fileName)
+    return minIOUtils.removeFile(ProblemBucketName, fileName)
+  }
+
   fun listStaticFilename(
     pid: Long,
     classicProblem: ClassicProblem

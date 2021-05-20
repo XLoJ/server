@@ -155,8 +155,11 @@ class PolygonController(
   }
 
   @DeleteMapping("/problem/{pid}/static")
-  fun removeStaticFile(@RequestAttribute problem: Problem) {
-
+  fun removeStaticFile(
+    @RequestAttribute problem: Problem,
+    @RequestParam filename: String
+  ) {
+    return staticFileService.removeStaticFile(problem, filename)
   }
 
   @PostMapping("/problem/{pid}/build")

@@ -49,7 +49,19 @@ class StaticFileService(
 
   }
 
-  fun removeStaticFile(problem: Problem) {
-
+  fun removeStaticFile(problem: Problem, filename: String) {
+    val classicProblem =
+      classicProblemRepository.findClassicProblemByParentId(problem.id)
+    val filenames = minIOService.listStaticFilename(problem.id, classicProblem)
+      .map { it.split('/').last() }
+    if (filenames.contains(filename)) {
+      minIOService.removeStaticFileFromMinIO(
+        problem.id,
+        classicProblem,
+        filename
+      )
+    } else {
+      throw NotFoundException("未找到名为 \"${filename}\" 的静态文件")
+    }
   }
 }
