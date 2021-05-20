@@ -69,6 +69,7 @@ class PolygonService(
       } else {
         null
       },
+      codeRepository.findAllGenerators(classicProblem.id),
       classicProblem.testcases,
       classicProblem.version,
       classicProblem.createTime,

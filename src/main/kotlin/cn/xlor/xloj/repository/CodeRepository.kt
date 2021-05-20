@@ -6,7 +6,9 @@ import cn.xlor.xloj.model.classicProblemCodes
 import cn.xlor.xloj.polygon.dto.UploadCodeDto
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
+import org.ktorm.entity.filter
 import org.ktorm.entity.find
+import org.ktorm.entity.toList
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -19,6 +21,11 @@ class CodeRepository(
 
   fun findCodeByCPId(cpid: Long, cid: Long): ClassicProblemCode? {
     return database.classicProblemCodes.find { (it.id eq cid) and (it.parent eq cpid) }
+  }
+
+  fun findAllGenerators(cpid: Long): List<ClassicProblemCode> {
+    return database.classicProblemCodes.filter { (it.parent eq cpid) and (it.type eq "generator") }
+      .toList()
   }
 
   fun uploadCode(cpid: Long, type: String, uploadCodeDto: UploadCodeDto): Long {

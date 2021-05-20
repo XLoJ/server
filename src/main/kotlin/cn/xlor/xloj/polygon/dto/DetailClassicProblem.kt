@@ -14,6 +14,7 @@ data class DetailClassicProblem(
   var checker: ClassicProblemCode?,
   var validator: ClassicProblemCode?,
   var solution: ClassicProblemCode?,
+  val generators: List<ClassicProblemCode>,
   var testcases: String,
   var version: Int,
   val createTime: Instant,
