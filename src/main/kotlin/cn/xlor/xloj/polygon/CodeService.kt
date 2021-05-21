@@ -38,7 +38,8 @@ class CodeService(
       codeRepository.findCodeById(newCheckerId)!!
     } else {
       val checker = codeRepository.findCodeById(checkerId)!!
-      codeRepository.updateCode(checkerId, uploadCodeDto, checker.version + 1)
+      checker.version += 1
+      codeRepository.updateCode(checkerId, uploadCodeDto, checker.version)
       codeRepository.findCodeById(checkerId)!!
     }
     minIOService.uploadCodeToMinIO(problem.id, classicProblem, checker)
@@ -79,10 +80,11 @@ class CodeService(
       codeRepository.findCodeById(newValidatorId)!!
     } else {
       val validator = codeRepository.findCodeById(validatorId)!!
+      validator.version += 1
       codeRepository.updateCode(
         validatorId,
         uploadCodeDto,
-        validator.version + 1
+        validator.version
       )
       codeRepository.findCodeById(validatorId)!!
     }
@@ -123,7 +125,8 @@ class CodeService(
       codeRepository.findCodeById(newSolutionId)!!
     } else {
       val solution = codeRepository.findCodeById(solutionId)!!
-      codeRepository.updateCode(solutionId, uploadCodeDto, solution.version + 1)
+      solution.version += 1
+      codeRepository.updateCode(solutionId, uploadCodeDto, solution.version)
       codeRepository.findCodeById(solutionId)!!
     }
     minIOService.uploadCodeToMinIO(problem.id, classicProblem, solution)
@@ -171,7 +174,8 @@ class CodeService(
     val generator =
       codeRepository.findCodeByCPId(classicProblem.id, generatorId)
         ?: throw NotFoundException("题目 \"${problem.id}-${classicProblem.name}\" 没有 id 为 \"${generatorId}\" 的 Generator")
-    codeRepository.updateCode(generatorId, uploadCodeDto, generator.version + 1)
+    generator.version += 1
+    codeRepository.updateCode(generatorId, uploadCodeDto, generator.version)
     minIOService.uploadCodeToMinIO(problem.id, classicProblem, generator)
     return codeRepository.findCodeById(generatorId)!!
   }
