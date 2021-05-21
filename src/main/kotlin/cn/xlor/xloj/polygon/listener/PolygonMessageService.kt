@@ -20,4 +20,23 @@ class PolygonMessageService(
       getPolygonMessageKey(polygonMessage.problem, polygonMessage.version)
     redisTemplate.opsForSet().add(polygonMessageKey, polygonMessage)
   }
+
+  fun findPolygonMessage(
+    problemName: String,
+    version: Int
+  ): List<Any> {
+    val polygonMessageKey = getPolygonMessageKey(problemName, version)
+    val members =
+      redisTemplate.opsForSet().members(polygonMessageKey)
+    return members?.toList()?.sortedBy {
+      if (it is PolygonMessage) it.index
+      else if (it is HashMap<*, *>) {
+        val any = it.getOrDefault("index", 0)
+        if (any is Int) {
+          any
+        } else
+          0
+      } else 0
+    } ?: emptyList()
+  }
 }

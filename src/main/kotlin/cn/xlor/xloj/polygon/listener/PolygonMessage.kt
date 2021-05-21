@@ -5,6 +5,8 @@ data class PolygonMessage(
   var problem: String = "",
   var version: Int = -1,
   var action: String = "",
+  var name: String = "",
+  var message: String = "",
   var from: String = "",
   var timestamp: String = ""
 ) {

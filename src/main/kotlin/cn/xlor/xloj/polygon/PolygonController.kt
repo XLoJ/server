@@ -170,6 +170,21 @@ class PolygonController(
     return staticFileService.removeStaticFile(problem, filename)
   }
 
+  @GetMapping("/problem/{pid}/build/{version}")
+  fun findClassicProblemBuildMessage(
+    @RequestAttribute problem: Problem,
+    @PathVariable version: Int
+  ): List<Any> {
+    return polygonService.findClassicProblemBuildMessage(problem, version)
+  }
+
+  @GetMapping("/problem/{pid}/build")
+  fun findAllClassicProblemBuildMessage(
+    @RequestAttribute problem: Problem
+  ): Map<Int, List<Any>> {
+    return polygonService.findAllClassicProblemBuildMessage(problem)
+  }
+
   @PostMapping("/problem/{pid}/build")
   fun buildClassicProblem(@RequestAttribute problem: Problem) {
     return polygonService.buildClassicProblem(problem)

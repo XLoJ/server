@@ -154,4 +154,33 @@ class PolygonService(
 
     rabbitTemplate.convertAndSend(PolygonQueuName, payload)
   }
+
+  fun findClassicProblemBuildMessage(
+    problem: Problem,
+    version: Int
+  ): List<Any> {
+    val classicProblem =
+      classicProblemRepository.findClassicProblemByParentId(problem.id)
+
+    val basename = "${problem.id}-${classicProblem.name}"
+
+    return polygonMessageService.findPolygonMessage(basename, version)
+  }
+
+  fun findAllClassicProblemBuildMessage(problem: Problem): Map<Int, List<Any>> {
+    val classicProblem =
+      classicProblemRepository.findClassicProblemByParentId(problem.id)
+
+    val basename = "${problem.id}-${classicProblem.name}"
+
+    val map = HashMap<Int, List<Any>>()
+    for (version in 0..classicProblem.version) {
+      map += version to polygonMessageService.findPolygonMessage(
+        basename,
+        version
+      )
+    }
+
+    return map
+  }
 }
