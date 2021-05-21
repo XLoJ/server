@@ -51,6 +51,7 @@ dependencies {
   testImplementation("io.projectreactor:reactor-test")
   testImplementation("org.springframework.amqp:spring-rabbit-test")
   testImplementation("com.h2database:h2:1.4.200")
+  testImplementation("com.github.kstyrc:embedded-redis:0.6")
 }
 
 tasks.withType<KotlinCompile> {
