@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @EnableCaching
 class XLojApplication {
   @Bean
-  fun corsConfigurer(): WebMvcConfigurer? {
+  fun corsConfigurer(): WebMvcConfigurer {
     return object : WebMvcConfigurer {
       override fun addCorsMappings(registry: CorsRegistry) {
         registry

@@ -171,7 +171,7 @@ class PolygonController(
   }
 
   @PostMapping("/problem/{pid}/build")
-  fun buildProblem(@RequestAttribute problem: Problem) {
-
+  fun buildClassicProblem(@RequestAttribute problem: Problem) {
+    return polygonService.buildClassicProblem(problem)
   }
 }

@@ -1,23 +1,32 @@
 package cn.xlor.xloj.polygon
 
+import cn.xlor.xloj.PolygonQueuName
 import cn.xlor.xloj.model.ClassicProblem
+import cn.xlor.xloj.model.ClassicProblemCode
 import cn.xlor.xloj.model.Problem
 import cn.xlor.xloj.polygon.dto.DetailClassicProblem
 import cn.xlor.xloj.polygon.dto.ProblemListItem
 import cn.xlor.xloj.polygon.dto.UpdateProblemDto
+import cn.xlor.xloj.polygon.listener.PolygonMessageService
 import cn.xlor.xloj.repository.ClassicProblemRepository
 import cn.xlor.xloj.repository.CodeRepository
 import cn.xlor.xloj.repository.ProblemRepository
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.stereotype.Service
 
 @Service
 class PolygonService(
+  private val rabbitTemplate: RabbitTemplate,
   private val codeRepository: CodeRepository,
+  private val classicProblemRepository: ClassicProblemRepository,
   private val problemRepository: ProblemRepository,
-  private val classicProblemRepository: ClassicProblemRepository
+  private val codeService: CodeService,
+  private val staticFileService: StaticFileService,
+  private val minIOService: MinIOService,
+  private val polygonMessageService: PolygonMessageService
 ) {
   fun findUserProblemList(uid: Long): List<ProblemListItem> {
-    return problemRepository.findUserProblemList(uid).map { it ->
+    return problemRepository.findUserProblemList(uid).mapNotNull {
       val classicProblem =
         classicProblemRepository.findClassicProblemByParentId(it.id)
       if (classicProblem != null) {
@@ -25,7 +34,7 @@ class PolygonService(
       } else {
         null
       }
-    }.filterNotNull()
+    }
   }
 
   fun createClassicProblem(name: String, creatorId: Long): Problem {
@@ -105,5 +114,44 @@ class PolygonService(
       testcases
     )
     return classicProblem
+  }
+
+  fun buildClassicProblem(problem: Problem) {
+    val payload = mutableMapOf<String, Any>()
+
+    val classicProblem =
+      classicProblemRepository.findClassicProblemByParentId(problem.id)
+
+    val basename = "${problem.id}-${classicProblem.name}"
+    payload += "problem" to basename
+
+    payload += "version" to classicProblem.version
+    payload += "timeLimit" to problem.timeLimit
+    payload += "memoryLimit" to problem.memoryLimit
+    payload += "testcases" to classicProblem.testcases
+
+    payload += "staticFiles" to staticFileService.getAllStaticFilename(problem)
+      .map {
+        mapOf("name" to it, "fullname" to "static/$it")
+      }
+
+    fun transCode(code: ClassicProblemCode) = mapOf<String, Any>(
+      "id" to code.id,
+      "name" to code.name,
+      "language" to code.language,
+      "type" to code.type,
+      "version" to code.version,
+      "fullname" to minIOService.codeFilename(problem.id, classicProblem, code)
+        .split("/").last()
+    )
+    payload += "checker" to transCode(codeService.findChecker(problem))
+    payload += "validator" to transCode(codeService.findValidator(problem))
+    payload += "solution" to transCode(codeService.findSolution(problem))
+    payload += "generators" to codeRepository.findAllGenerators(classicProblem.id)
+      .map(::transCode)
+
+    polygonMessageService.resetPolygonMessage(basename, classicProblem.version)
+
+    rabbitTemplate.convertAndSend(PolygonQueuName, payload)
   }
 }

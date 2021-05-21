@@ -14,18 +14,26 @@ class StaticFileService(
   private val minIOService: MinIOService,
   private val classicProblemRepository: ClassicProblemRepository
 ) {
-  fun getAllStaticFileSummary(problem: Problem): List<StaticFileSummary> {
+  fun getAllStaticFilename(problem: Problem): List<String> {
     val classicProblem =
       classicProblemRepository.findClassicProblemByParentId(problem.id)
     return minIOService.listStaticFilename(problem.id, classicProblem)
-      .map { it ->
-        val filename = it.split('/').last()
+      .map {
+        it.split('/').last()
+      }
+  }
+
+  fun getAllStaticFileSummary(problem: Problem): List<StaticFileSummary> {
+    val classicProblem =
+      classicProblemRepository.findClassicProblemByParentId(problem.id)
+    return getAllStaticFilename(problem)
+      .map {
         StaticFileSummary(
-          filename,
+          it,
           minIOService.getStaticFileSummary(
             problem.id,
             classicProblem,
-            filename
+            it
           )
         )
       }
