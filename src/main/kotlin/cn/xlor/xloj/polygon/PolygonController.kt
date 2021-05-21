@@ -186,7 +186,8 @@ class PolygonController(
   }
 
   @PostMapping("/problem/{pid}/build")
-  fun buildClassicProblem(@RequestAttribute problem: Problem) {
-    return polygonService.buildClassicProblem(problem)
+  fun buildClassicProblem(@RequestAttribute problem: Problem): Map<String, Int> {
+    val classicProblem = polygonService.buildClassicProblem(problem)
+    return mapOf("version" to classicProblem.version)
   }
 }

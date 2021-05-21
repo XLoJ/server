@@ -116,7 +116,7 @@ class PolygonService(
     return classicProblem
   }
 
-  fun buildClassicProblem(problem: Problem) {
+  fun buildClassicProblem(problem: Problem): ClassicProblem {
     val payload = mutableMapOf<String, Any>()
 
     val classicProblem =
@@ -153,6 +153,8 @@ class PolygonService(
     polygonMessageService.resetPolygonMessage(basename, classicProblem.version)
 
     rabbitTemplate.convertAndSend(PolygonQueuName, payload)
+
+    return classicProblem
   }
 
   fun findClassicProblemBuildMessage(
