@@ -15,13 +15,13 @@ spring:
     host: ${REDIS_HOST}
     port: ${REDIS_PORT:6379}
     database: 0
-    timeout: 10000
+    timeout: 30000
     password: ${REDIS_PASS}
     jedis:
       pool:
-        max-active: 16
-        max-wait: 10000
-        max-idle: 8
+        max-active: 32
+        max-wait: 30000
+        max-idle: 32
         min-idle: 0
 
 jwt:
