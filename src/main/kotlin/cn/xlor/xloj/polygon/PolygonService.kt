@@ -122,6 +122,12 @@ class PolygonService(
     val classicProblem =
       classicProblemRepository.findClassicProblemByParentId(problem.id)
 
+    classicProblem.version += 1
+    classicProblemRepository.setClassicProblemVersion(
+      problem.id,
+      classicProblem.version
+    )
+
     val basename = "${problem.id}-${classicProblem.name}"
     payload += "problem" to basename
 
@@ -176,11 +182,14 @@ class PolygonService(
     val basename = "${problem.id}-${classicProblem.name}"
 
     val map = HashMap<Int, List<Any>>()
-    for (version in 0..classicProblem.version) {
-      map += version to polygonMessageService.findPolygonMessage(
+    for (version in 1..classicProblem.version) {
+      val messages = polygonMessageService.findPolygonMessage(
         basename,
         version
       )
+      if (messages.size > 0) {
+        map += version to messages
+      }
     }
 
     return map

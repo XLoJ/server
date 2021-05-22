@@ -51,4 +51,11 @@ class ClassicProblemRepository(
       where { it.parent eq pid }
     }
   }
+
+  fun setClassicProblemVersion(pid: Long, version: Int) {
+    database.update(ClassicProblems) {
+      set(it.version, version)
+      where { it.parent eq pid }
+    }
+  }
 }
