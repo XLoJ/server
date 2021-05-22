@@ -31,9 +31,7 @@ interface Problem : Entity<Problem> {
 
   var notes: String
 
-  var exampleInput: String
-
-  var exampleOutput: String
+  var examples: String
 
   var createTime: Instant
 
@@ -63,9 +61,7 @@ object Problems : Table<Problem>("problems") {
 
   val notes = text("notes").bindTo { it.notes }
 
-  val exampleInput = text("example_input").bindTo { it.exampleInput }
-
-  val exampleOutput = text("example_output").bindTo { it.exampleOutput }
+  val examples = text("examples").bindTo { it.examples }
 
   val createTime = timestamp("create_time").bindTo { it.createTime }
 
