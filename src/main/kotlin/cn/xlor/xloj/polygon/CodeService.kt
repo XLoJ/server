@@ -38,8 +38,7 @@ class CodeService(
       codeRepository.findCodeById(newCheckerId)!!
     } else {
       val checker = codeRepository.findCodeById(checkerId)!!
-      checker.version += 1
-      codeRepository.updateCode(checkerId, uploadCodeDto, checker.version)
+      codeRepository.updateCode(checkerId, uploadCodeDto, checker.version + 1)
       codeRepository.findCodeById(checkerId)!!
     }
     minIOService.uploadCodeToMinIO(problem.id, classicProblem, checker)
@@ -80,11 +79,10 @@ class CodeService(
       codeRepository.findCodeById(newValidatorId)!!
     } else {
       val validator = codeRepository.findCodeById(validatorId)!!
-      validator.version += 1
       codeRepository.updateCode(
         validatorId,
         uploadCodeDto,
-        validator.version
+        validator.version + 1
       )
       codeRepository.findCodeById(validatorId)!!
     }
@@ -125,8 +123,7 @@ class CodeService(
       codeRepository.findCodeById(newSolutionId)!!
     } else {
       val solution = codeRepository.findCodeById(solutionId)!!
-      solution.version += 1
-      codeRepository.updateCode(solutionId, uploadCodeDto, solution.version)
+      codeRepository.updateCode(solutionId, uploadCodeDto, solution.version + 1)
       codeRepository.findCodeById(solutionId)!!
     }
     minIOService.uploadCodeToMinIO(problem.id, classicProblem, solution)
@@ -174,10 +171,12 @@ class CodeService(
     val generator =
       codeRepository.findCodeByCPId(classicProblem.id, generatorId)
         ?: throw NotFoundException("题目 \"${problem.id}-${classicProblem.name}\" 没有 id 为 \"${generatorId}\" 的 Generator")
-    generator.version += 1
-    codeRepository.updateCode(generatorId, uploadCodeDto, generator.version)
-    minIOService.uploadCodeToMinIO(problem.id, classicProblem, generator)
-    return codeRepository.findCodeById(generatorId)!!
+    codeRepository.updateCode(generatorId, uploadCodeDto, generator.version + 1)
+
+    val newGenerator = codeRepository.findCodeById(generatorId)!!
+    minIOService.uploadCodeToMinIO(problem.id, classicProblem, newGenerator)
+
+    return newGenerator
   }
 
   fun removeGenerator(problem: Problem, generatorId: Long) {
