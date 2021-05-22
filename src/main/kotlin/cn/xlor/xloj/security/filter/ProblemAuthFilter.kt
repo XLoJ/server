@@ -4,6 +4,7 @@ import cn.xlor.xloj.ProblemAttributeKey
 import cn.xlor.xloj.UserAttributeKey
 import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.repository.ProblemRepository
+import cn.xlor.xloj.security.makeNotFoundResponse
 import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest

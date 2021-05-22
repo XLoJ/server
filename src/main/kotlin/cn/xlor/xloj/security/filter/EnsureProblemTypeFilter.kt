@@ -2,6 +2,7 @@ package cn.xlor.xloj.security.filter
 
 import cn.xlor.xloj.ProblemAttributeKey
 import cn.xlor.xloj.model.Problem
+import cn.xlor.xloj.security.makeNotFoundResponse
 import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest

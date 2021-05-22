@@ -10,6 +10,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
+import org.springframework.integration.redis.util.RedisLockRegistry
 
 @Configuration
 @ConfigurationProperties(prefix = "spring.redis")
@@ -39,5 +40,10 @@ class RedisConfiguration {
       Jackson2JsonRedisSerializer(Object::class.java)
     redisTemplate.afterPropertiesSet()
     return redisTemplate
+  }
+
+  @Bean
+  fun redisLockRegistry(redisConnectionFactory: RedisConnectionFactory): RedisLockRegistry {
+    return RedisLockRegistry(redisConnectionFactory, "lock")
   }
 }

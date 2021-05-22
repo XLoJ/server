@@ -8,7 +8,7 @@ class PolygonMessageService(
   private val redisTemplate: RedisTemplate<String, Any>
 ) {
   fun getPolygonMessageKey(problemName: String, version: Int) =
-    "$problemName:$version"
+    "messages/$problemName:$version"
 
   fun resetPolygonMessage(problemName: String, version: Int): Boolean {
     val polygonMessageKey = getPolygonMessageKey(problemName, version)

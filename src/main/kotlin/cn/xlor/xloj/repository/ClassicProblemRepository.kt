@@ -44,4 +44,11 @@ class ClassicProblemRepository(
       where { it.id eq cpid }
     }
   }
+
+  fun setClassicProblemStatus(pid: Long, status: Int) {
+    database.update(ClassicProblems) {
+      set(it.status, status)
+      where { it.parent eq pid }
+    }
+  }
 }

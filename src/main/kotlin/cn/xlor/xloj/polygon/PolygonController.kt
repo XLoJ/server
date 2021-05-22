@@ -1,23 +1,25 @@
 package cn.xlor.xloj.polygon
 
+import cn.xlor.xloj.exception.BadRequestException
 import cn.xlor.xloj.exception.NotFoundException
 import cn.xlor.xloj.model.ClassicProblem
 import cn.xlor.xloj.model.ClassicProblemCode
 import cn.xlor.xloj.model.Problem
 import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.polygon.dto.*
+import cn.xlor.xloj.security.ProblemLockService
 import org.springframework.web.bind.annotation.*
 import java.io.BufferedReader
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
-
 
 @RestController
 @RequestMapping("/polygon")
 class PolygonController(
   private val polygonService: PolygonService,
   private val codeService: CodeService,
-  private val staticFileService: StaticFileService
+  private val staticFileService: StaticFileService,
+  private val problemLockService: ProblemLockService
 ) {
   @GetMapping("/problems")
   fun getAllProblems(@RequestAttribute user: UserProfile): List<ProblemListItem> {
@@ -187,6 +189,10 @@ class PolygonController(
 
   @PostMapping("/problem/{pid}/build")
   fun buildClassicProblem(@RequestAttribute problem: Problem): Map<String, Int> {
+    val lock = problemLockService.lock(problem)
+    if (!lock) {
+      throw BadRequestException("Run build fail")
+    }
     val classicProblem = polygonService.buildClassicProblem(problem)
     return mapOf("version" to classicProblem.version)
   }

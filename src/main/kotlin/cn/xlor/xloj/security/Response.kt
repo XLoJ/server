@@ -1,4 +1,4 @@
-package cn.xlor.xloj.security.filter
+package cn.xlor.xloj.security
 
 import org.springframework.http.HttpStatus
 import java.time.LocalDateTime
@@ -29,6 +29,19 @@ fun makeNotFoundResponse(
   httpResponse.characterEncoding = "UTF-8"
   val responseBody =
     "{ \"status\": \"${HttpStatus.NOT_FOUND}\", \"timestamp\": \"${LocalDateTime.now()}\", \"message\": \"${message}\" }"
+  httpResponse.writer.println(responseBody)
+}
+
+fun makeBadRequestResponse(
+  response: ServletResponse,
+  message: String
+) {
+  val httpResponse = response as HttpServletResponse
+  httpResponse.status = HttpStatus.BAD_REQUEST.value()
+  httpResponse.contentType = "application/json;charset=UTF-8"
+  httpResponse.characterEncoding = "UTF-8"
+  val responseBody =
+    "{ \"status\": \"${HttpStatus.BAD_REQUEST}\", \"timestamp\": \"${LocalDateTime.now()}\", \"message\": \"${message}\" }"
   httpResponse.writer.println(responseBody)
 }
 

@@ -15,6 +15,10 @@ interface ClassicProblem : Entity<ClassicProblem> {
 
   val name: String
 
+  /*
+   * 0 -> Waiting
+   * 1 -> Processing
+   */
   var status: Int
 
   var checker: Long?

@@ -3,6 +3,7 @@ package cn.xlor.xloj.security.filter
 import cn.xlor.xloj.UserAttributeKey
 import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.repository.UserRepository
+import cn.xlor.xloj.security.makeUnAuthorizeResponse
 import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
