@@ -23,7 +23,6 @@ class PolygonMessageListener(
     } else {
       if (message.action == PolygonMessage.END) {
         // Update judge info
-        println(message)
         var flag = true
         val version = message.version
         val checkerName =
@@ -42,10 +41,14 @@ class PolygonMessageListener(
           }
         // Uncheck
         val size = message.message.toInt()
-        if (flag) {
+        val problem = problemRepository.findProblemById(pid)
+        if (flag && problem != null) {
           classicJudgeRepository.setClassicJudge(
             pid,
+            message.problem,
             version,
+            problem.timeLimit,
+            problem.memoryLimit,
             checkerName,
             checkerLanguage,
             size

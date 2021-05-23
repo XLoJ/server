@@ -15,7 +15,13 @@ interface ClassicJudge : Entity<ClassicJudge> {
 
   val parent: Long
 
+  val problemName: String
+
   val version: Int
+
+  val maxTime: Int
+
+  val maxMemory: Int
 
   val checkerName: String
 
@@ -29,7 +35,13 @@ object ClassicJudges : Table<ClassicJudge>("classic_judges") {
 
   val parent = long("parent").bindTo { it.parent }
 
+  val problemName = text("problem_name").bindTo { it.problemName }
+
   val version = int("version").bindTo { it.version }
+
+  val maxTime = int("max_time").bindTo { it.maxTime }
+
+  val maxMemory = int("max_memory").bindTo { it.maxMemory }
 
   val checkerName = text("checker_name").bindTo { it.checkerName }
 

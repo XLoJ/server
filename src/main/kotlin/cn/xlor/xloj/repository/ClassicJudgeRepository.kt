@@ -20,7 +20,10 @@ class ClassicJudgeRepository(
 
   fun setClassicJudge(
     pid: Long,
+    problemName: String,
     version: Int,
+    maxTime: Int,
+    maxMemory: Int,
     checkerName: String,
     checkerLanguage: String,
     size: Int
@@ -28,7 +31,10 @@ class ClassicJudgeRepository(
     if (findClassicJudge(pid) == null) {
       database.insert(ClassicJudges) {
         set(it.parent, pid)
+        set(it.problemName, problemName)
         set(it.version, version)
+        set(it.maxTime, maxTime)
+        set(it.maxMemory, maxMemory)
         set(it.checkerName, checkerName)
         set(it.checkerLanguage, checkerLanguage)
         set(it.size, size)
@@ -36,7 +42,10 @@ class ClassicJudgeRepository(
     } else {
       database.update(ClassicJudges) {
         set(it.version, version)
+        set(it.problemName, problemName)
         set(it.checkerName, checkerName)
+        set(it.maxTime, maxTime)
+        set(it.maxMemory, maxMemory)
         set(it.checkerLanguage, checkerLanguage)
         set(it.size, size)
         where { it.parent eq pid }
