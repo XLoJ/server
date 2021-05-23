@@ -25,7 +25,7 @@ class ProblemLockInterceptor(
     if (split.size >= 5 && split[4] == "build") return true
     return if (request.method == "POST" || request.method == "PUT" || request.method == "DELETE") {
       val problem =
-        request.getAttribute(ProblemAttributeKey) as Problem
+        request.getAttribute(ProblemAttributeKey) as Problem? ?: return true
       val flag = problemLockService.lock(problem)
       if (flag) {
         request.setAttribute(LockKey, true)
