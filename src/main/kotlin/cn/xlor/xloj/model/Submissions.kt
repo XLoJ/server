@@ -8,9 +8,19 @@ import java.time.Instant
 
 interface Submission : Entity<Submission> {
   companion object : Entity.Factory<Submission>() {
-    const val WAITING = -3
-    const val WRONG_ANSWER = -1
-    const val ACCEPTED = 0
+    const val Compiling = -4
+    const val Waiting = -3
+    const val Finished = -2
+    const val WrongAnswer = -1
+    const val Accepted = 0
+    const val TimeLimitExceeded = 1
+    const val IdlenessLimitExceeded = 2
+    const val MemoryLimitExceeded = 3
+    const val RuntimeError = 4
+    const val SystemError = 5
+    const val CompileError = 6
+    const val JudgeError = 8
+    const val TestCaseError = 9
   }
 
   val id: Long
@@ -18,6 +28,8 @@ interface Submission : Entity<Submission> {
   val user: User
 
   val contest: Contest
+
+  val problem: Long
 
   val body: String
 
@@ -40,6 +52,8 @@ object Submissions : Table<Submission>("submissions") {
   val user = long("user").references(Users) { it.user }
 
   val contest = long("contest").references(Contests) { it.contest }
+
+  val problem = long("problem").bindTo { it.problem }
 
   val body = text("body").bindTo { it.body }
 
