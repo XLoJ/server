@@ -39,12 +39,18 @@ class UserRepository(
     return database.userGroups.filter { it.uid eq uid }.toList()
   }
 
+  /*
+   * Created in database
+   */
   @Cacheable(cacheNames = ["adminGroup"])
   fun adminGroup(): Group {
     logger.debug("Query admin...")
     return database.groups.find { it.name eq "admin" }!!
   }
 
+  /*
+   * Created in database
+   */
   @Cacheable(cacheNames = ["polygonGroup"])
   fun polygonGroup(): Group {
     logger.debug("Query polygon...")
