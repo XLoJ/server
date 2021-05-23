@@ -33,6 +33,33 @@ class MinIOService(
     filename: String
   ) = "${problemFolderName(pid, classicProblem)}/static/$filename"
 
+  private fun testcaseFilename(
+    pid: Long,
+    classicProblem: ClassicProblem,
+    version: Int,
+    tid: Int,
+    suffix: String
+  ) = "${
+    problemFolderName(
+      pid,
+      classicProblem
+    )
+  }/testcases/${version}/$tid.$suffix"
+
+  fun testcaseInFilename(
+    pid: Long,
+    classicProblem: ClassicProblem,
+    version: Int,
+    tid: Int
+  ) = testcaseFilename(pid, classicProblem, version, tid, "in")
+
+  fun testcaseAnsFilename(
+    pid: Long,
+    classicProblem: ClassicProblem,
+    version: Int,
+    tid: Int
+  ) = testcaseFilename(pid, classicProblem, version, tid, "ans")
+
   fun uploadCodeToMinIO(
     pid: Long,
     classicProblem: ClassicProblem,
@@ -119,6 +146,26 @@ class MinIOService(
     name: String
   ): BufferedReader {
     val fileName = staticFilename(pid, classicProblem, name)
+    return minIOUtils.getFileToStream(ProblemBucketName, fileName)
+  }
+
+  fun downloadTestcaseInFile(
+    pid: Long,
+    classicProblem: ClassicProblem,
+    version: Int,
+    tid: Int
+  ): BufferedReader {
+    val fileName = testcaseInFilename(pid, classicProblem, version, tid)
+    return minIOUtils.getFileToStream(ProblemBucketName, fileName)
+  }
+
+  fun downloadTestcaseAnsFile(
+    pid: Long,
+    classicProblem: ClassicProblem,
+    version: Int,
+    tid: Int
+  ): BufferedReader {
+    val fileName = testcaseAnsFilename(pid, classicProblem, version, tid)
     return minIOUtils.getFileToStream(ProblemBucketName, fileName)
   }
 }

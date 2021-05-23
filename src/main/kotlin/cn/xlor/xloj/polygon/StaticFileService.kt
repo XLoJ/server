@@ -39,7 +39,7 @@ class StaticFileService(
       }
   }
 
-  fun downloadFile(problem: Problem, filename: String): BufferedReader {
+  fun downloadStaticFile(problem: Problem, filename: String): BufferedReader {
     val classicProblem =
       classicProblemRepository.findClassicProblemByParentId(problem.id)
     val filenames = minIOService.listStaticFilename(problem.id, classicProblem)
@@ -88,6 +88,31 @@ class StaticFileService(
       )
     } else {
       throw NotFoundException("未找到名为 \"${filename}\" 的静态文件")
+    }
+  }
+
+  fun getTestcase(
+    problem: Problem,
+    version: Int,
+    tid: Int,
+    isIn: Boolean
+  ): BufferedReader {
+    val classicProblem =
+      classicProblemRepository.findClassicProblemByParentId(problem.id)
+    return if (isIn) {
+      minIOService.downloadTestcaseInFile(
+        problem.id,
+        classicProblem,
+        version,
+        tid
+      )
+    } else {
+      minIOService.downloadTestcaseAnsFile(
+        problem.id,
+        classicProblem,
+        version,
+        tid
+      )
     }
   }
 }

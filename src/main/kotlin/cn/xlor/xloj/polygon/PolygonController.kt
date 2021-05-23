@@ -138,6 +138,36 @@ class PolygonController(
     )
   }
 
+  @GetMapping("/problem/{pid}/testcase/{version}/{tid}.in")
+  fun getTestcaseIn(
+    @RequestAttribute problem: Problem,
+    @PathVariable version: Int,
+    @PathVariable tid: Int,
+    response: HttpServletResponse
+  ): String {
+    val downloadFile =
+      staticFileService.getTestcase(problem, version, tid, true)
+    val text = downloadFile.use(BufferedReader::readText)
+    response.contentType = "text/plain;charset=UTF-8"
+    response.setHeader("Content-length", text.length.toString())
+    return text
+  }
+
+  @GetMapping("/problem/{pid}/testcase/{version}/{tid}.ans")
+  fun getTestcaseAnswer(
+    @RequestAttribute problem: Problem,
+    @PathVariable version: Int,
+    @PathVariable tid: Int,
+    response: HttpServletResponse
+  ): String {
+    val downloadFile =
+      staticFileService.getTestcase(problem, version, tid, false)
+    val text = downloadFile.use(BufferedReader::readText)
+    response.contentType = "text/plain;charset=UTF-8"
+    response.setHeader("Content-length", text.length.toString())
+    return text
+  }
+
   @GetMapping("/problem/{pid}/static")
   fun findAllStaticFile(@RequestAttribute problem: Problem): List<StaticFileSummary> {
     return staticFileService.getAllStaticFileSummary(problem)
@@ -149,7 +179,7 @@ class PolygonController(
     @RequestParam filename: String,
     response: HttpServletResponse
   ): String {
-    val downloadFile = staticFileService.downloadFile(problem, filename)
+    val downloadFile = staticFileService.downloadStaticFile(problem, filename)
     val text = downloadFile.use(BufferedReader::readText)
     response.contentType = "text/plain;charset=UTF-8"
     response.setHeader("Content-length", text.length.toString())
