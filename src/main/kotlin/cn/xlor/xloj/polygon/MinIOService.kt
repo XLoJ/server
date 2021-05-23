@@ -168,4 +168,13 @@ class MinIOService(
     val fileName = testcaseAnsFilename(pid, classicProblem, version, tid)
     return minIOUtils.getFileToStream(ProblemBucketName, fileName)
   }
+
+  fun downloadCodeHistory(
+    pid: Long,
+    classicProblem: ClassicProblem,
+    filename: String
+  ): String {
+    val fullFilename = problemFolderName(pid, classicProblem) + "/" + filename
+    return minIOUtils.getFile(ProblemBucketName, fullFilename)
+  }
 }

@@ -186,4 +186,14 @@ class CodeService(
       ?: throw NotFoundException("题目 \"${problem.id}-${classicProblem.name}\" 没有 id 为 \"${generatorId}\" 的 Generator")
     codeRepository.removeCode(generatorId)
   }
+
+  fun getCodeHistory(problem: Problem, fullname: String): String {
+    val classicProblem =
+      classicProblemRepository.findClassicProblemByParentId(problem.id)
+    return minIOService.downloadCodeHistory(
+      problem.id,
+      classicProblem,
+      fullname
+    )
+  }
 }

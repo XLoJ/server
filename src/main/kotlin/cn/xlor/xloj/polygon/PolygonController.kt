@@ -168,6 +168,17 @@ class PolygonController(
     return text
   }
 
+  @GetMapping("/problem/{pid}/code")
+  fun getCodeHistory(
+    @RequestAttribute problem: Problem,
+    @RequestParam fullname: String
+  ): String {
+    if (fullname.contains("/")) {
+      throw BadRequestException("Code fullname \"$fullname\" contains unknown character")
+    }
+    return codeService.getCodeHistory(problem, fullname)
+  }
+
   @GetMapping("/problem/{pid}/static")
   fun findAllStaticFile(@RequestAttribute problem: Problem): List<StaticFileSummary> {
     return staticFileService.getAllStaticFileSummary(problem)
