@@ -63,7 +63,7 @@ class SubmissionRepository(
   fun resetSubmission(submissionId: Long) {
     database.update(Submissions) {
       set(it.verdict, Submission.Waiting)
-      set(it.time, 0.0)
+      set(it.time, 0)
       set(it.memory, 0.0)
       set(it.pass, 0)
       where { it.id eq submissionId }
@@ -79,7 +79,7 @@ class SubmissionRepository(
 
   fun updateRunningSubmission(
     submissionId: Long,
-    time: Double,
+    time: Int,
     memory: Double,
     pass: Int,
     verdict: Int = Submission.Running

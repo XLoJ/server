@@ -12,7 +12,7 @@ data class DetailClassicSubmission(
   val body: String,
   val language: String,
   val verdict: Int,
-  val time: Double,
+  val time: Int,
   val memory: Double,
   val pass: Int,
   val createTime: Instant,

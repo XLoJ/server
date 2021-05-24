@@ -38,11 +38,13 @@ interface Submission : Entity<Submission> {
 
   val verdict: Int
 
-  val time: Double
+  val time: Int
 
   val memory: Double
 
   val pass: Int
+
+  val from: String
 
   val createTime: Instant
 }
@@ -62,11 +64,13 @@ object Submissions : Table<Submission>("submissions") {
 
   val verdict = int("verdict").bindTo { it.verdict }
 
-  val time = double("time").bindTo { it.time }
+  val time = int("time").bindTo { it.time }
 
   val memory = double("memory").bindTo { it.memory }
 
   val pass = int("pass").bindTo { it.pass }
+
+  val from = text("from").bindTo { it.from }
 
   val createTime = timestamp("create_time").bindTo { it.createTime }
 }

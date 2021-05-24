@@ -44,7 +44,8 @@ class ClassicJudgeListener(
       // Handle classic judge result message
       val submission =
         submissionRepository.findSubmissionById(submissionId)!!
-      val time = maxOf(message.time, submission.time)
+      // Time unit in message is second, here is ms
+      val time = maxOf((message.time * 1000).toInt(), submission.time)
       val memory = maxOf(message.memory, submission.memory)
       val pass = message.pass
       if (message.verdict == Submission.Accepted) {
