@@ -44,10 +44,10 @@ class ClassicJudgeListener(
       // Handle classic judge result message
       val submission =
         submissionRepository.findSubmissionById(submissionId)!!
+      val time = maxOf(message.time, submission.time)
+      val memory = maxOf(message.memory, submission.memory)
+      val pass = message.pass
       if (message.verdict == Submission.Accepted) {
-        val time = maxOf(message.time, submission.time)
-        val memory = maxOf(message.memory, submission.memory)
-        val pass = message.pass
         if (submission.verdict == Submission.Running) {
           submissionRepository.updateRunningSubmission(
             submissionId,
@@ -57,7 +57,13 @@ class ClassicJudgeListener(
           )
         }
       } else {
-        submissionRepository.setSubmissionStatus(submissionId, message.verdict)
+        submissionRepository.updateRunningSubmission(
+          submissionId,
+          time,
+          memory,
+          pass,
+          message.verdict
+        )
       }
     }
     classicJudgeMessageService.saveClassicJudgeMessage(message.id, message)

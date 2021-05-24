@@ -81,10 +81,11 @@ class SubmissionRepository(
     submissionId: Long,
     time: Double,
     memory: Double,
-    pass: Int
+    pass: Int,
+    verdict: Int = Submission.Running
   ) {
     database.update(Submissions) {
-      set(it.verdict, Submission.Running)
+      set(it.verdict, verdict)
       set(it.time, time)
       set(it.memory, memory)
       set(it.pass, pass)
