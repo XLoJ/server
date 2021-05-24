@@ -19,7 +19,7 @@ class ContestController(
 
   }
 
-  @GetMapping("/{cid}")
+  @GetMapping("/{cid}/problems")
   fun findContestProblemList(@PathVariable cid: Long) {
 
   }
