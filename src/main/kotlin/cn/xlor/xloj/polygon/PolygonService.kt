@@ -139,7 +139,8 @@ class PolygonService(
     payload += "problem" to basename
 
     payload += "version" to classicProblem.version
-    payload += "timeLimit" to problem.timeLimit
+    // Time unit in judge core is second
+    payload += "timeLimit" to problem.timeLimit.toDouble() / 1000.0
     payload += "memoryLimit" to problem.memoryLimit
     payload += "testcases" to classicProblem.testcases
 

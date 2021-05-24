@@ -22,7 +22,8 @@ class ClassicJudgeService(
     val payload = HashMap<String, Any>()
 
     payload += "id" to submission.id.toString()
-    payload += "maxTime" to classicJudge.maxTime
+    // Time unit in judge core is second
+    payload += "maxTime" to classicJudge.maxTime.toDouble() / 1000.0
     payload += "maxMemory" to classicJudge.maxMemory
     payload += "problem" to mapOf(
       "name" to classicJudge.problemName,
