@@ -77,6 +77,18 @@ class SubmissionRepository(
     }
   }
 
+  fun setSubmissionStatusAndFrom(
+    submissionId: Long,
+    verdict: Int,
+    from: String
+  ) {
+    database.update(Submissions) {
+      set(it.verdict, verdict)
+      set(it.from, from)
+      where { it.id eq submissionId }
+    }
+  }
+
   fun updateRunningSubmission(
     submissionId: Long,
     time: Int,
