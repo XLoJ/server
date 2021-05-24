@@ -52,4 +52,18 @@ class ClassicJudgeRepository(
       }
     }
   }
+
+  fun setClassicJudgeMaxLimit(
+    pid: Long,
+    maxTime: Int,
+    maxMemory: Int
+  ) {
+    if (findClassicJudge(pid) != null) {
+      database.update(ClassicJudges) {
+        set(it.maxTime, maxTime)
+        set(it.maxMemory, maxMemory)
+        where { it.parent eq pid }
+      }
+    }
+  }
 }

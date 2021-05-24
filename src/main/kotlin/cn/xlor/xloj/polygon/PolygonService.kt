@@ -8,6 +8,7 @@ import cn.xlor.xloj.polygon.dto.DetailClassicProblem
 import cn.xlor.xloj.polygon.dto.ProblemListItem
 import cn.xlor.xloj.polygon.dto.UpdateProblemDto
 import cn.xlor.xloj.polygon.listener.PolygonMessageService
+import cn.xlor.xloj.repository.ClassicJudgeRepository
 import cn.xlor.xloj.repository.ClassicProblemRepository
 import cn.xlor.xloj.repository.CodeRepository
 import cn.xlor.xloj.repository.ProblemRepository
@@ -19,6 +20,7 @@ class PolygonService(
   private val rabbitTemplate: RabbitTemplate,
   private val codeRepository: CodeRepository,
   private val classicProblemRepository: ClassicProblemRepository,
+  private val classicJudgeRepository: ClassicJudgeRepository,
   private val problemRepository: ProblemRepository,
   private val codeService: CodeService,
   private val staticFileService: StaticFileService,
@@ -99,6 +101,11 @@ class PolygonService(
     problem.outputFormat = updateProblemDto.outputFormat ?: problem.outputFormat
     problem.notes = updateProblemDto.notes ?: problem.notes
     problemRepository.updateProblemInfo(problem)
+    classicJudgeRepository.setClassicJudgeMaxLimit(
+      problem.id,
+      problem.timeLimit,
+      problem.memoryLimit
+    )
     return problem
   }
 
