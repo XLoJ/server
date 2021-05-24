@@ -30,7 +30,7 @@ class ClassicJudgeService(
       )
     )
     payload += "casesVersion" to classicJudge.version
-    payload += "cases" to (1..classicJudge.size).map { "$it.in" }
+    payload += "cases" to (1..classicJudge.size).map { it.toString() }
 
     payload += "code" to submission.body
     payload += "lang" to submission.language
