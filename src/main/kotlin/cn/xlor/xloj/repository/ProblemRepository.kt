@@ -65,9 +65,16 @@ class ProblemRepository(
     }
   }
 
-  fun updateExamples(pid: Long, examples: String) {
+  fun setExamples(pid: Long, examples: String) {
     database.update(Problems) {
       set(it.examples, examples)
+      where { it.id eq pid }
+    }
+  }
+
+  fun setTestcaseNum(pid: Long, testcaseNum: Int) {
+    database.update(Problems) {
+      set(it.testcaseNum, testcaseNum)
       where { it.id eq pid }
     }
   }

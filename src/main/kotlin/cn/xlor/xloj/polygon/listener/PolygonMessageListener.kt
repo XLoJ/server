@@ -19,7 +19,7 @@ class PolygonMessageListener(
   fun handlePolygonMessage(message: PolygonMessage) {
     val pid = message.problem.split('-').first().toLong()
     if (message.action == PolygonMessage.EXAMPLE) {
-      problemRepository.updateExamples(pid, message.message)
+      problemRepository.setExamples(pid, message.message)
     } else {
       if (message.action == PolygonMessage.END) {
         // Update judge info
@@ -53,6 +53,7 @@ class PolygonMessageListener(
             checkerLanguage,
             size
           )
+          problemRepository.setTestcaseNum(pid, size)
         } else {
           message.action = PolygonMessage.ERROR
           message.code = emptyMap()

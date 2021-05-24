@@ -79,6 +79,6 @@ class TestJudgeService(
     val submission =
       submissionRepository.findSubmissionById(submissionId)!!
     classicJudgeService.runClassicJudge(submission)
-    return submissionRepository.findSubmissionById(submissionId)!!
+    return submission
   }
 }
