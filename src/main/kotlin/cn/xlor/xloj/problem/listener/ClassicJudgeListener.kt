@@ -15,7 +15,12 @@ class ClassicJudgeListener(
   @RabbitListener(queuesToDeclare = [Queue(ClassicJudgeMessageQueueName)])
   fun handleJudgeMessage(message: ClassicJudgeMessage) {
     val submissionId = message.id
-    if (message.verdict == Submission.Compiling) {
+    if (message.verdict == Submission.Running) {
+      submissionRepository.setSubmissionStatus(
+        submissionId,
+        Submission.Running
+      )
+    } else if (message.verdict == Submission.Compiling) {
       submissionRepository.setSubmissionStatus(
         submissionId,
         Submission.Compiling
@@ -43,9 +48,7 @@ class ClassicJudgeListener(
         val time = maxOf(message.time, submission.time)
         val memory = maxOf(message.memory, submission.memory)
         val pass = message.pass
-        if (submission.verdict == Submission.Compiling
-          || submission.verdict == Submission.Running
-        ) {
+        if (submission.verdict == Submission.Running) {
           submissionRepository.updateRunningSubmission(
             submissionId,
             time,
