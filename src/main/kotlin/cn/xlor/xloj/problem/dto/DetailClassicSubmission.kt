@@ -15,6 +15,7 @@ data class DetailClassicSubmission(
   val time: Int,
   val memory: Double,
   val pass: Int,
+  val from: String,
   val createTime: Instant,
   val messages: List<Any>
 )
