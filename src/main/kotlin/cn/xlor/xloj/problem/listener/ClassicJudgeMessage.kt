@@ -4,7 +4,7 @@ data class ClassicJudgeMessage(
   var index: Int = 0,
   var from: String = "",
   var timestamp: String = "",
-  var id: Int = 0,
+  var id: Long = 0,
   var verdict: Int = 0,
   var time: Double = 0.0,
   var memory: Double = 0.0,

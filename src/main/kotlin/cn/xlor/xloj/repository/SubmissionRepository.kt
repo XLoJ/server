@@ -7,6 +7,7 @@ import org.ktorm.database.Database
 import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.insertAndGenerateKey
+import org.ktorm.dsl.update
 import org.ktorm.entity.filter
 import org.ktorm.entity.find
 import org.ktorm.entity.sortedByDescending
@@ -57,5 +58,37 @@ class SubmissionRepository(
       set(it.language, language)
       set(it.verdict, Submission.Waiting)
     } as Long
+  }
+
+  fun resetSubmission(submissionId: Long) {
+    database.update(Submissions) {
+      set(it.verdict, Submission.Waiting)
+      set(it.time, 0.0)
+      set(it.memory, 0.0)
+      set(it.pass, 0)
+      where { it.id eq submissionId }
+    }
+  }
+
+  fun setSubmissionStatus(submissionId: Long, verdict: Int) {
+    database.update(Submissions) {
+      set(it.verdict, verdict)
+      where { it.id eq submissionId }
+    }
+  }
+
+  fun updateRunningSubmission(
+    submissionId: Long,
+    time: Double,
+    memory: Double,
+    pass: Int
+  ) {
+    database.update(Submissions) {
+      set(it.verdict, Submission.Running)
+      set(it.time, time)
+      set(it.memory, memory)
+      set(it.pass, pass)
+      where { it.id eq submissionId }
+    }
   }
 }

@@ -3,6 +3,7 @@ package cn.xlor.xloj.problem.judge
 import cn.xlor.xloj.ClassicJudgeQueueName
 import cn.xlor.xloj.exception.NotFoundException
 import cn.xlor.xloj.model.Submission
+import cn.xlor.xloj.problem.listener.ClassicJudgeMessageService
 import cn.xlor.xloj.repository.ClassicJudgeRepository
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.stereotype.Service
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service
 @Service
 class ClassicJudgeService(
   private val classicJudgeRepository: ClassicJudgeRepository,
+  private val classicJudgeMessageService: ClassicJudgeMessageService,
   private val rabbitTemplate: RabbitTemplate
 ) {
   fun runClassicJudge(submission: Submission) {
@@ -34,6 +36,8 @@ class ClassicJudgeService(
 
     payload += "code" to submission.body
     payload += "lang" to submission.language
+
+    classicJudgeMessageService.resetClassicJudgeMessage(submission.id)
 
     rabbitTemplate.convertAndSend(ClassicJudgeQueueName, payload)
   }

@@ -8,6 +8,7 @@ import java.time.Instant
 
 interface Submission : Entity<Submission> {
   companion object : Entity.Factory<Submission>() {
+    const val Running = -5
     const val Compiling = -4
     const val Waiting = -3
     const val Finished = -2
@@ -37,9 +38,9 @@ interface Submission : Entity<Submission> {
 
   val verdict: Int
 
-  val time: Int
+  val time: Double
 
-  val memory: Int
+  val memory: Double
 
   val pass: Int
 
@@ -61,9 +62,9 @@ object Submissions : Table<Submission>("submissions") {
 
   val verdict = int("verdict").bindTo { it.verdict }
 
-  val time = int("time").bindTo { it.time }
+  val time = double("time").bindTo { it.time }
 
-  val memory = int("memory").bindTo { it.memory }
+  val memory = double("memory").bindTo { it.memory }
 
   val pass = int("pass").bindTo { it.pass }
 
