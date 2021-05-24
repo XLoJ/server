@@ -68,6 +68,7 @@ class ClassicJudgeListener(
         )
       }
     }
+    message.time = (message.time * 1000).toInt().toDouble()
     classicJudgeMessageService.saveClassicJudgeMessage(message.id, message)
   }
 }
