@@ -43,7 +43,8 @@ class SecurityFilterFactory(
     filterRegistrationBean.setName("problemAuth")
     filterRegistrationBean.order = 3
     filterRegistrationBean.filter = ProblemAuthFilter(problemRepository)
-    filterRegistrationBean.urlPatterns = listOf("/polygon/problem/*")
+    filterRegistrationBean.urlPatterns =
+      listOf("/polygon/problem/*", "/polygon/judge/*")
     return filterRegistrationBean
   }
 
@@ -56,7 +57,8 @@ class SecurityFilterFactory(
       "classic",
       listOf("checker", "validator", "solution", "generator")
     )
-    filterRegistrationBean.urlPatterns = listOf("/polygon/problem/*")
+    filterRegistrationBean.urlPatterns =
+      listOf("/polygon/problem/*", "/polygon/judge/*")
     return filterRegistrationBean
   }
 

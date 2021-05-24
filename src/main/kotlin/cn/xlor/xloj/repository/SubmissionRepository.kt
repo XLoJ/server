@@ -4,6 +4,7 @@ import cn.xlor.xloj.model.Submission
 import cn.xlor.xloj.model.Submissions
 import cn.xlor.xloj.model.submissions
 import org.ktorm.database.Database
+import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.insertAndGenerateKey
 import org.ktorm.entity.filter
@@ -27,6 +28,14 @@ class SubmissionRepository(
 
   fun findAllSubmissionsByProblem(problemId: Long): List<Submission> {
     return database.submissions.filter { it.problem eq problemId }
+      .sortedByDescending { it.id }.toList()
+  }
+
+  fun findAllSubmissionsByProblemAndUser(
+    problemId: Long,
+    userId: Long
+  ): List<Submission> {
+    return database.submissions.filter { (it.problem eq problemId) and (it.user eq userId) }
       .sortedByDescending { it.id }.toList()
   }
 

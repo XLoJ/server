@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 @Component
 class ClassicJudgeListener {
   @RabbitListener(queuesToDeclare = [Queue(ClassicJudgeMessageQueueName)])
-  fun handleJudgeMessage(message: String) {
+  fun handleJudgeMessage(message: ClassicJudgeMessage) {
     println(message)
   }
 }

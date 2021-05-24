@@ -2,11 +2,9 @@ package cn.xlor.xloj.polygon
 
 import cn.xlor.xloj.exception.BadRequestException
 import cn.xlor.xloj.exception.NotFoundException
-import cn.xlor.xloj.model.ClassicProblem
-import cn.xlor.xloj.model.ClassicProblemCode
-import cn.xlor.xloj.model.Problem
-import cn.xlor.xloj.model.UserProfile
+import cn.xlor.xloj.model.*
 import cn.xlor.xloj.polygon.dto.*
+import cn.xlor.xloj.problem.dto.ClassicSubmissionDto
 import cn.xlor.xloj.security.ProblemLockService
 import org.springframework.web.bind.annotation.*
 import java.io.BufferedReader
@@ -19,6 +17,7 @@ class PolygonController(
   private val polygonService: PolygonService,
   private val codeService: CodeService,
   private val staticFileService: StaticFileService,
+  private val testJudgeService: TestJudgeService,
   private val problemLockService: ProblemLockService
 ) {
   @GetMapping("/problems")
@@ -236,5 +235,30 @@ class PolygonController(
     }
     val classicProblem = polygonService.buildClassicProblem(problem)
     return mapOf("version" to classicProblem.version)
+  }
+
+  @GetMapping("/judge/{pid}/submissions")
+  fun getUserAllTestSubmissions(
+    @RequestAttribute problem: Problem,
+    @RequestAttribute user: UserProfile
+  ): List<Submission> {
+    return testJudgeService.findUserAllSubmission(problem, user)
+  }
+
+  @GetMapping("/judge/{pid}/submission/{sid}")
+  fun getTestSubmission(
+    @RequestAttribute problem: Problem,
+    @RequestAttribute user: UserProfile,
+    @PathVariable sid: Long
+  ) {
+  }
+
+  @PostMapping("/judge/{pid}")
+  fun runTestJudge(
+    @RequestAttribute problem: Problem,
+    @RequestAttribute user: UserProfile,
+    @Valid @RequestBody classicSubmissionDto: ClassicSubmissionDto
+  ): Map<String, Long> {
+    return testJudgeService.runTestJudge(problem, user, classicSubmissionDto)
   }
 }
