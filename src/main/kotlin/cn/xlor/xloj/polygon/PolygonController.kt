@@ -5,6 +5,7 @@ import cn.xlor.xloj.exception.NotFoundException
 import cn.xlor.xloj.model.*
 import cn.xlor.xloj.polygon.dto.*
 import cn.xlor.xloj.problem.dto.ClassicSubmissionDto
+import cn.xlor.xloj.problem.dto.DetailClassicSubmission
 import cn.xlor.xloj.security.ProblemLockService
 import org.springframework.web.bind.annotation.*
 import java.io.BufferedReader
@@ -250,7 +251,8 @@ class PolygonController(
     @RequestAttribute problem: Problem,
     @RequestAttribute user: UserProfile,
     @PathVariable sid: Long
-  ) {
+  ): DetailClassicSubmission {
+    return testJudgeService.findTestJudgeSubmissionDetail(problem, user, sid)
   }
 
   @PostMapping("/judge/{pid}")
@@ -258,7 +260,7 @@ class PolygonController(
     @RequestAttribute problem: Problem,
     @RequestAttribute user: UserProfile,
     @Valid @RequestBody classicSubmissionDto: ClassicSubmissionDto
-  ): Map<String, Long> {
+  ): Submission {
     return testJudgeService.runTestJudge(problem, user, classicSubmissionDto)
   }
 }

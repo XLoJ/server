@@ -26,7 +26,7 @@ interface Submission : Entity<Submission> {
 
   val id: Long
 
-  val user: User
+  val user: Long
 
   val contest: Contest
 
@@ -50,7 +50,7 @@ interface Submission : Entity<Submission> {
 object Submissions : Table<Submission>("submissions") {
   val id = long("id").primaryKey().bindTo { it.id }
 
-  val user = long("user").references(Users) { it.user }
+  val user = long("user").bindTo { it.user }
 
   val contest = long("contest").references(Contests) { it.contest }
 
