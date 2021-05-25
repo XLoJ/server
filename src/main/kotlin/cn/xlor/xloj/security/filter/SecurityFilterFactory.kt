@@ -25,6 +25,16 @@ class SecurityFilterFactory(
   }
 
   @Bean
+  fun userFilter(): FilterRegistrationBean<Filter> {
+    val filterRegistrationBean = FilterRegistrationBean<Filter>()
+    filterRegistrationBean.setName("user")
+    filterRegistrationBean.order = 2
+    filterRegistrationBean.filter = UserFilter(jwtService, userRepository)
+    filterRegistrationBean.urlPatterns = listOf("/*")
+    return filterRegistrationBean
+  }
+
+  @Bean
   fun polygonAuthFilter(): FilterRegistrationBean<Filter> {
     val filterRegistrationBean = FilterRegistrationBean<Filter>()
     filterRegistrationBean.setName("polygonAuth")

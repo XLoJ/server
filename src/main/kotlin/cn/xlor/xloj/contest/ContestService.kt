@@ -3,39 +3,106 @@ package cn.xlor.xloj.contest
 import cn.xlor.xloj.contest.dto.ContestWithWriter
 import cn.xlor.xloj.contest.dto.DetailContest
 import cn.xlor.xloj.exception.NotFoundException
+import cn.xlor.xloj.model.Contest
+import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.model.toUserProfile
 import cn.xlor.xloj.repository.ContestRepository
 import cn.xlor.xloj.repository.UserRepository
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class ContestService(
   private val contestRepository: ContestRepository,
   private val userRepository: UserRepository
 ) {
+  private fun addWritersToContest(contest: Contest): ContestWithWriter {
+    val creator =
+      userRepository.findOneUserById(contest.creator)!!.toUserProfile()
+    val writers =
+      contestRepository.findContestWritersById(contest.id)
+    return ContestWithWriter(
+      id = contest.id,
+      name = contest.name,
+      description = contest.description,
+      startTime = contest.startTime,
+      duration = contest.duration,
+      creator = creator,
+      writers = listOf(creator) + writers,
+      public = contest.public
+    )
+  }
+
   fun findAllPublicContests(): List<ContestWithWriter> {
     return contestRepository.findAllPublicContests().map {
-      val creator = userRepository.findOneUserById(it.creator)!!.toUserProfile()
-      val writers =
-        contestRepository.findContestWritersById(it.id)
-      ContestWithWriter(
-        id = it.id,
-        name = it.name,
-        description = it.description,
-        startTime = it.startTime,
-        duration = it.duration,
-        creator = creator,
-        writers = listOf(creator) + writers
-      )
+      addWritersToContest(it)
     }
   }
 
-  fun findDetailContest(contestId: Long): DetailContest {
+  fun findAllUserContests(user: UserProfile): List<ContestWithWriter> {
+    return (
+        findAllPublicContests()
+            + contestRepository.findAllUserCreateContests(user.id)
+          .map { addWritersToContest(it) }
+            + contestRepository.findAllUserManageContests(user.id)
+        ).sortedByDescending { it.id }
+  }
+
+  /**
+   * Visitor contest access condition:
+   * 1. Public contest
+   * 2. After contest begin
+   */
+  private fun canVisitorFindContest(contest: Contest): Boolean {
+    return !(!contest.public || contest.startTime.toEpochMilli() > Instant.now()
+      .toEpochMilli())
+  }
+
+  private fun canUserFindContest(contest: Contest, user: UserProfile): Boolean {
+    return contest.creator == user.id || contestRepository.checkUserManageContest(
+      contest.id,
+      user.id
+    )
+  }
+
+  fun findPublicDetailContest(contestId: Long): DetailContest {
     val contest = contestRepository.findContestById(contestId)
-      ?: throw NotFoundException("未找到比赛 ${contestId}.")
+      ?: throw NotFoundException("无权访问比赛 $contestId.")
     val creator = userRepository.findOneUserById(contest.creator)!!
       .toUserProfile()
     val writers = contestRepository.findContestWritersById(contestId)
+
+    if (!canVisitorFindContest(contest)) {
+      throw NotFoundException("无权访问比赛 ${contest.id}.")
+    }
+
+    return DetailContest(
+      id = contestId,
+      name = contest.name,
+      description = contest.description,
+      startTime = contest.startTime,
+      duration = contest.duration,
+      creator = creator,
+      writers = listOf(creator) + writers,
+      problems = emptyList()
+    )
+  }
+
+  fun findDetailContestWithUser(
+    contestId: Long,
+    user: UserProfile
+  ): DetailContest {
+    val contest = contestRepository.findContestById(contestId)
+      ?: throw NotFoundException("未找到比赛 $contestId.")
+    val creator = userRepository.findOneUserById(contest.creator)!!
+      .toUserProfile()
+    val writers = contestRepository.findContestWritersById(contestId)
+
+    if (!canVisitorFindContest(contest)) {
+      if (!canUserFindContest(contest, user)) {
+        throw NotFoundException("无权访问比赛 ${contest.id}.")
+      }
+    }
 
     return DetailContest(
       id = contestId,

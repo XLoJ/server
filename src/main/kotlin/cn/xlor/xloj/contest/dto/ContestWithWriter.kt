@@ -10,5 +10,6 @@ data class ContestWithWriter(
   val startTime: Instant,
   val duration: Int,
   val creator: UserProfile,
-  val writers: List<UserProfile>
+  val writers: List<UserProfile>,
+  val public: Boolean
 )

@@ -1,9 +1,11 @@
 package cn.xlor.xloj.contest
 
+import cn.xlor.xloj.UserAttributeKey
 import cn.xlor.xloj.contest.dto.ContestWithWriter
 import cn.xlor.xloj.contest.dto.DetailContest
 import cn.xlor.xloj.model.UserProfile
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletRequest
 
 
 @RestController
@@ -17,13 +19,26 @@ class ContestController(
   }
 
   @GetMapping
-  fun findAllPublicContests(): List<ContestWithWriter> {
-    return contestService.findAllPublicContests()
+  fun findAllPublicContests(request: HttpServletRequest): List<ContestWithWriter> {
+    val user = request.getAttribute(UserAttributeKey)
+    return if (user == null) {
+      contestService.findAllPublicContests()
+    } else {
+      contestService.findAllUserContests(user as UserProfile)
+    }
   }
 
   @GetMapping("/{cid}")
-  fun findDetailContest(@PathVariable cid: Long): DetailContest {
-    return contestService.findDetailContest(cid)
+  fun findDetailContest(
+    @PathVariable cid: Long,
+    request: HttpServletRequest
+  ): DetailContest {
+    val user = request.getAttribute(UserAttributeKey)
+    return if (user == null) {
+      contestService.findPublicDetailContest(cid)
+    } else {
+      contestService.findDetailContestWithUser(cid, user as UserProfile)
+    }
   }
 
   @GetMapping("/{cid}/problems")
