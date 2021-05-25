@@ -30,6 +30,11 @@ class ContestRepository(
       .filter { it.type notEq Contest.RemoteType }
   }
 
+  fun findAllContests(): List<Contest> {
+    return filterBuiltinContest()
+      .sortedByDescending { it.id }.toList()
+  }
+
   fun findAllPublicContests(): List<Contest> {
     return filterBuiltinContest().filter { it.public eq true }
       .sortedByDescending { it.id }.toList()

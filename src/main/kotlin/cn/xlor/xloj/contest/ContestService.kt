@@ -40,12 +40,16 @@ class ContestService(
   }
 
   fun findAllUserContests(user: UserProfile): List<ContestWithWriter> {
-    return (
-        findAllPublicContests()
-            + contestRepository.findAllUserCreateContests(user.id)
-          .map { addWritersToContest(it) }
-            + contestRepository.findAllUserManageContests(user.id)
-        ).sortedByDescending { it.id }
+    return if (userRepository.isUserAdmin(user.id)) {
+      contestRepository.findAllContests().map { addWritersToContest(it) }
+    } else {
+      (
+          findAllPublicContests()
+              + contestRepository.findAllUserCreateContests(user.id)
+            .map { addWritersToContest(it) }
+              + contestRepository.findAllUserManageContests(user.id)
+          ).sortedByDescending { it.id }
+    }
   }
 
   /**
@@ -59,7 +63,7 @@ class ContestService(
   }
 
   private fun canUserFindContest(contest: Contest, user: UserProfile): Boolean {
-    return contest.creator == user.id || contestRepository.checkUserManageContest(
+    return userRepository.isUserAdmin(user.id) || contest.creator == user.id || contestRepository.checkUserManageContest(
       contest.id,
       user.id
     )

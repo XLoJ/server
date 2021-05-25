@@ -5,6 +5,7 @@ import cn.xlor.xloj.security.hashPassword
 import cn.xlor.xloj.user.dto.UserRegisterDto
 import cn.xlor.xloj.utils.LoggerDelegate
 import org.ktorm.database.Database
+import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.insert
 import org.ktorm.entity.filter
@@ -37,6 +38,10 @@ class UserRepository(
 
   fun findUserGroups(uid: Long): List<UserGroup> {
     return database.userGroups.filter { it.uid eq uid }.toList()
+  }
+
+  fun isUserAdmin(uid: Long): Boolean {
+    return database.userGroups.find { (it.uid eq uid) and (it.group eq adminGroup().id) } != null
   }
 
   /*
