@@ -1,0 +1,33 @@
+package cn.xlor.xloj.security.filter
+
+import cn.xlor.xloj.UserAttributeKey
+import cn.xlor.xloj.model.UserProfile
+import cn.xlor.xloj.repository.UserRepository
+import cn.xlor.xloj.security.makeUnAuthorizeResponse
+import javax.servlet.Filter
+import javax.servlet.FilterChain
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
+import javax.servlet.http.HttpServletRequest
+
+class AdminAuthFilter(
+  private val userRepository: UserRepository
+) : Filter {
+  override fun doFilter(
+    request: ServletRequest,
+    response: ServletResponse,
+    chain: FilterChain
+  ) {
+    val req = request as HttpServletRequest
+    val userProfile =
+      req.getAttribute(UserAttributeKey) as UserProfile
+    val userGroups = userRepository.findUserGroups(userProfile.id)
+    val isFindAdminAuth =
+      userGroups.any { it.group.id == userRepository.adminGroup().id }
+    if (isFindAdminAuth) {
+      chain.doFilter(request, response)
+    } else {
+      makeUnAuthorizeResponse(response, "您没有 Admin 权限", userProfile.username)
+    }
+  }
+}

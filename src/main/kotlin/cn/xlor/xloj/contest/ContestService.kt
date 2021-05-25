@@ -16,6 +16,11 @@ class ContestService(
   private val contestRepository: ContestRepository,
   private val userRepository: UserRepository
 ) {
+  fun createContest(name: String, user: UserProfile): DetailContest {
+    val contestId = contestRepository.createContest(name, user.id)
+    return findDetailContestWithUser(contestId, user)
+  }
+
   private fun addWritersToContest(contest: Contest): ContestWithWriter {
     val creator =
       userRepository.findOneUserById(contest.creator)!!.toUserProfile()

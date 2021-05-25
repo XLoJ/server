@@ -2,10 +2,12 @@ package cn.xlor.xloj.contest
 
 import cn.xlor.xloj.UserAttributeKey
 import cn.xlor.xloj.contest.dto.ContestWithWriter
+import cn.xlor.xloj.contest.dto.CreateContestDto
 import cn.xlor.xloj.contest.dto.DetailContest
 import cn.xlor.xloj.model.UserProfile
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
+import javax.validation.Valid
 
 
 @RestController
@@ -13,9 +15,12 @@ import javax.servlet.http.HttpServletRequest
 class ContestController(
   private val contestService: ContestService
 ) {
-  @PostMapping("/admin")
-  fun createContest() {
-
+  @PostMapping("/create")
+  fun createContest(
+    @RequestAttribute user: UserProfile,
+    @Valid @RequestBody createContestDto: CreateContestDto
+  ): DetailContest {
+    return contestService.createContest(createContestDto.name, user)
   }
 
   @GetMapping

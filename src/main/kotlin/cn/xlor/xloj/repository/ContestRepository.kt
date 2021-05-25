@@ -23,6 +23,19 @@ class ContestRepository(
     return database.contests.find { it.type eq Contest.LocalType }!!
   }
 
+  fun createContest(name: String, userId: Long): Long {
+    return database.insertAndGenerateKey(Contests) {
+      set(it.name, name)
+      set(it.creator, userId)
+    } as Long
+  }
+
+  fun updateContest(contestId: Long) {
+    database.update(Contests) {
+      where { it.id eq contestId }
+    }
+  }
+
   private fun filterBuiltinContest(): EntitySequence<Contest, Contests> {
     return database.contests
       .filter { it.type notEq Contest.PolygonType }

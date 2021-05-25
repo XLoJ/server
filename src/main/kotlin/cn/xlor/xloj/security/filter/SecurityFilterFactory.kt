@@ -20,7 +20,8 @@ class SecurityFilterFactory(
     filterRegistrationBean.setName("userAuth")
     filterRegistrationBean.order = 1
     filterRegistrationBean.filter = UserAuthFilter(jwtService, userRepository)
-    filterRegistrationBean.urlPatterns = listOf("/profile", "/polygon/*")
+    filterRegistrationBean.urlPatterns =
+      listOf("/profile", "/polygon/*", "/contest/create")
     return filterRegistrationBean
   }
 
@@ -31,6 +32,16 @@ class SecurityFilterFactory(
     filterRegistrationBean.order = 2
     filterRegistrationBean.filter = UserFilter(jwtService, userRepository)
     filterRegistrationBean.urlPatterns = listOf("/*")
+    return filterRegistrationBean
+  }
+
+  @Bean
+  fun adminAuthFilter(): FilterRegistrationBean<Filter> {
+    val filterRegistrationBean = FilterRegistrationBean<Filter>()
+    filterRegistrationBean.setName("adminAuth")
+    filterRegistrationBean.order = 2
+    filterRegistrationBean.filter = AdminAuthFilter(userRepository)
+    filterRegistrationBean.urlPatterns = listOf("/contest/create")
     return filterRegistrationBean
   }
 
