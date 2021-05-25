@@ -55,6 +55,19 @@ class ContestController(
     return contestService.pushContestProblem(user, contest, problem)
   }
 
+  @PutMapping("/admin/{cid}/problem/visible")
+  fun setContestProblemVisible(
+    @RequestAttribute contest: Contest,
+    @RequestParam contestProblem: Long,
+    @RequestParam visible: Boolean
+  ): ContestProblem {
+    return contestService.setContestProblemVisible(
+      contest,
+      contestProblem,
+      visible
+    )
+  }
+
   @DeleteMapping("/admin/{cid}/problem")
   fun removeContestProblem(
     @RequestAttribute contest: Contest,

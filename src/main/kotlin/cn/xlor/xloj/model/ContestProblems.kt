@@ -19,7 +19,7 @@ interface ContestProblem : Entity<ContestProblem> {
 
   val index: Int
 
-  val visible: Boolean
+  var visible: Boolean
 
   var passCount: Int
 

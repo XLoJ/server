@@ -174,6 +174,21 @@ class ContestService(
     return contestRepository.pushContestProblem(contest.id, problemId)
   }
 
+  fun setContestProblemVisible(
+    contest: Contest,
+    cpId: Long,
+    visible: Boolean
+  ): ContestProblem {
+    val contestProblem = contestRepository.findContestProblemById(cpId)
+      ?: throw NotFoundException("未找到比赛题目 $cpId.")
+    if (contestProblem.contest.id != contest.id) {
+      throw BadRequestException("比赛题目 $cpId. 不属于比赛 ${contest.id}.")
+    }
+    contestRepository.setContestProblemVisible(cpId, visible)
+    contestProblem.visible = visible
+    return contestProblem
+  }
+
   fun removeContestProblem(
     contest: Contest,
     cpId: Long
