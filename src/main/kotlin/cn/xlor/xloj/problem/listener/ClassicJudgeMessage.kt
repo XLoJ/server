@@ -10,5 +10,6 @@ data class ClassicJudgeMessage(
   var memory: Double = 0.0,
   var pass: Int = 0,
   var stdout: String = "",
-  var checkerOut: String = ""
+  var checkerOut: String = "",
+  var message: String = ""
 )
