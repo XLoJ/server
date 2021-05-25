@@ -23,6 +23,12 @@ class ContestRepository(
     return database.contests.find { it.type eq Contest.LocalType }!!
   }
 
+  fun isBuiltinContest(contest: Contest): Boolean {
+    return if (contest.id == polygonContest().id || contest.id == localContest().id) {
+      true
+    } else contest.type == Contest.RemoteType
+  }
+
   fun createContest(name: String, userId: Long): Long {
     return database.insertAndGenerateKey(Contests) {
       set(it.name, name)
