@@ -3,6 +3,7 @@ package cn.xlor.xloj.contest
 import cn.xlor.xloj.contest.dto.ContestWithWriter
 import cn.xlor.xloj.contest.dto.DetailContest
 import cn.xlor.xloj.contest.dto.UpdateContestDto
+import cn.xlor.xloj.exception.BadRequestException
 import cn.xlor.xloj.exception.NotFoundException
 import cn.xlor.xloj.exception.UnAuthorizeException
 import cn.xlor.xloj.model.Contest
@@ -171,5 +172,17 @@ class ContestService(
       throw UnAuthorizeException("用户 ${user.nickname} 无权访问题目 $problemId.")
     }
     return contestRepository.pushContestProblem(contest.id, problemId)
+  }
+
+  fun removeContestProblem(
+    contest: Contest,
+    cpId: Long
+  ) {
+    val contestProblem = contestRepository.findContestProblemById(cpId)
+      ?: throw NotFoundException("未找到比赛题目 $cpId.")
+    if (contestProblem.contest.id != contest.id) {
+      throw BadRequestException("比赛题目 $cpId. 不属于比赛 ${contest.id}.")
+    }
+    return contestRepository.removeContestProblem(cpId)
   }
 }

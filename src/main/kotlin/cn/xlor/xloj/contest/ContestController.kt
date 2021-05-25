@@ -60,7 +60,7 @@ class ContestController(
     @RequestAttribute contest: Contest,
     @RequestParam contestProblem: Long
   ) {
-
+    return contestService.removeContestProblem(contest, contestProblem)
   }
 
   @GetMapping

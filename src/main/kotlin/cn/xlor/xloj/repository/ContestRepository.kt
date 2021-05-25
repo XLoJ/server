@@ -137,6 +137,10 @@ class ContestRepository(
   }
 
   // --- Problem ---
+  fun findContestProblemById(cpId: Long): ContestProblem? {
+    return database.contestProblems.find { it.id eq cpId }
+  }
+
   fun findVisibleContestProblems(contestId: Long): List<ContestProblem> {
     return database.contestProblems.filter { it.contest eq contestId }
       .filter { it.visible eq true }
@@ -152,9 +156,9 @@ class ContestRepository(
     var curIndex = 0
     for ((index, contestProblem) in findAllContestProblems(contestId).withIndex()) {
       if (index != contestProblem.index) {
-        curIndex = index
         break
       }
+      curIndex++
     }
     val cpId = database.insertAndGenerateKey(ContestProblems) {
       set(it.contest, contestId)
