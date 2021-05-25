@@ -101,7 +101,10 @@ class ContestService(
    * 2. creator
    * 3. writer or manager
    */
-  private fun canUserFindContest(contest: Contest, user: UserProfile): Boolean {
+  private fun canUserFindFullContest(
+    contest: Contest,
+    user: UserProfile
+  ): Boolean {
     return userRepository.isUserAdmin(user.id) || contest.creator == user.id || contestRepository.checkUserManageContest(
       contest.id,
       user.id
@@ -142,8 +145,10 @@ class ContestService(
       .toUserProfile()
     val writers = contestRepository.findContestWritersById(contestId)
 
-    if (!canVisitorFindContest(contest)) {
-      if (!canUserFindContest(contest, user)) {
+    val canVisitorFindPublic = canVisitorFindContest(contest)
+    val canUserFindFull = canUserFindFullContest(contest, user)
+    if (!canVisitorFindPublic) {
+      if (!canUserFindFull) {
         throw NotFoundException("无权访问比赛 ${contest.id}.")
       }
     }
@@ -157,7 +162,11 @@ class ContestService(
       public = contest.public,
       creator = creator,
       writers = listOf(creator) + writers,
-      problems = contestRepository.findAllContestProblems(contestId)
+      problems = if (canUserFindFull) {
+        contestRepository.findAllContestProblems(contestId)
+      } else {
+        contestRepository.findVisibleContestProblems(contestId)
+      }
     )
   }
 
