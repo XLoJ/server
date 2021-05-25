@@ -135,4 +135,16 @@ class ContestRepository(
       .filter { (it.type eq ContestUser.ManagerType) or (it.type eq ContestUser.WriterType) }
       .count() > 0
   }
+
+  // --- Problem ---
+  fun findVisibleContestProblems(contestId: Long): List<ContestProblem> {
+    return database.contestProblems.filter { it.contest eq contestId }
+      .filter { it.visible eq true }
+      .sortedBy { it.index }.toList()
+  }
+
+  fun findAllContestProblems(contestId: Long): List<ContestProblem> {
+    return database.contestProblems.filter { it.contest eq contestId }
+      .sortedBy { it.index }.toList()
+  }
 }

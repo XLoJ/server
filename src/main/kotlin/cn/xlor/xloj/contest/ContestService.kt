@@ -88,6 +88,12 @@ class ContestService(
       .toEpochMilli())
   }
 
+  /**
+   * User contest access condition:
+   * 1. admin
+   * 2. creator
+   * 3. writer or manager
+   */
   private fun canUserFindContest(contest: Contest, user: UserProfile): Boolean {
     return userRepository.isUserAdmin(user.id) || contest.creator == user.id || contestRepository.checkUserManageContest(
       contest.id,
@@ -115,7 +121,7 @@ class ContestService(
       public = contest.public,
       creator = creator,
       writers = listOf(creator) + writers,
-      problems = emptyList()
+      problems = contestRepository.findVisibleContestProblems(contestId)
     )
   }
 
@@ -144,7 +150,7 @@ class ContestService(
       public = contest.public,
       creator = creator,
       writers = listOf(creator) + writers,
-      problems = emptyList()
+      problems = contestRepository.findAllContestProblems(contestId)
     )
   }
 }
