@@ -1,7 +1,6 @@
 package cn.xlor.xloj.repository
 
-import cn.xlor.xloj.model.Contest
-import cn.xlor.xloj.model.contests
+import cn.xlor.xloj.model.*
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.notEq
@@ -14,7 +13,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class ContestRepository(
-  private val database: Database
+  private val database: Database,
+  private val userRepository: UserRepository
 ) {
   @Cacheable(cacheNames = ["polygonContest"])
   fun polygonContest(): Contest {
@@ -36,5 +36,13 @@ class ContestRepository(
 
   fun findContestById(contestId: Long): Contest? {
     return database.contests.find { it.id eq contestId }
+  }
+
+  fun findContestWritersById(contestId: Long): List<UserProfile> {
+    return database.contestUsers
+      .filter { it.contest eq contestId }
+      .filter { it.type eq ContestUser.WriterType }
+      .toList()
+      .mapNotNull { userRepository.findOneUserById(it.user)?.toUserProfile() }
   }
 }
