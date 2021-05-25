@@ -1,4 +1,4 @@
-package cn.xlor.xloj.problem.judge
+package cn.xlor.xloj.problem
 
 import cn.xlor.xloj.ClassicJudgeQueueName
 import cn.xlor.xloj.exception.NotFoundException

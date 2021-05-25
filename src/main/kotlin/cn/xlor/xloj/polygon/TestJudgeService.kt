@@ -5,9 +5,9 @@ import cn.xlor.xloj.exception.NotFoundException
 import cn.xlor.xloj.model.Problem
 import cn.xlor.xloj.model.Submission
 import cn.xlor.xloj.model.UserProfile
+import cn.xlor.xloj.problem.ClassicJudgeService
 import cn.xlor.xloj.problem.dto.ClassicSubmissionDto
 import cn.xlor.xloj.problem.dto.DetailClassicSubmission
-import cn.xlor.xloj.problem.judge.ClassicJudgeService
 import cn.xlor.xloj.problem.listener.ClassicJudgeMessageService
 import cn.xlor.xloj.repository.ContestRepository
 import cn.xlor.xloj.repository.SubmissionRepository
