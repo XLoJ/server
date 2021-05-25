@@ -10,6 +10,7 @@ data class DetailContest(
   val description: String,
   val startTime: Instant,
   val duration: Int,
+  val public: Boolean,
   val creator: UserProfile,
   val writers: List<UserProfile>,
   val problems: List<Problem>

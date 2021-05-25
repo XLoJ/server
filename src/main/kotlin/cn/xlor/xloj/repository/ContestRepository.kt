@@ -40,6 +40,13 @@ class ContestRepository(
     }
   }
 
+  fun updateContestPublic(contestId: Long, public: Boolean) {
+    database.update(Contests) {
+      set(it.public, public)
+      where { it.id eq contestId }
+    }
+  }
+
   private fun filterBuiltinContest(): EntitySequence<Contest, Contests> {
     return database.contests
       .filter { it.type notEq Contest.PolygonType }

@@ -33,6 +33,18 @@ class ContestController(
     return contestService.updateContest(contest, updateContestDto)
   }
 
+  @PostMapping("/admin/{cid}/public")
+  fun updateContestPublic(
+    @RequestAttribute contest: Contest,
+    @RequestParam(
+      value = "public",
+      required = false,
+      defaultValue = "false"
+    ) public: Boolean
+  ): Contest {
+    return contestService.updateContestPublic(contest, public)
+  }
+
   @GetMapping
   fun findAllPublicContests(request: HttpServletRequest): List<ContestWithWriter> {
     val user = request.getAttribute(UserAttributeKey)

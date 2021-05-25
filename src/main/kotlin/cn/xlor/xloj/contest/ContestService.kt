@@ -34,6 +34,14 @@ class ContestService(
     return contestRepository.findContestById(contest.id)!!
   }
 
+  fun updateContestPublic(
+    contest: Contest,
+    public: Boolean
+  ): Contest {
+    contestRepository.updateContestPublic(contest.id, public)
+    return contestRepository.findContestById(contest.id)!!
+  }
+
   private fun addWritersToContest(contest: Contest): ContestWithWriter {
     val creator =
       userRepository.findOneUserById(contest.creator)!!.toUserProfile()
@@ -104,6 +112,7 @@ class ContestService(
       description = contest.description,
       startTime = contest.startTime,
       duration = contest.duration,
+      public = contest.public,
       creator = creator,
       writers = listOf(creator) + writers,
       problems = emptyList()
@@ -132,6 +141,7 @@ class ContestService(
       description = contest.description,
       startTime = contest.startTime,
       duration = contest.duration,
+      public = contest.public,
       creator = creator,
       writers = listOf(creator) + writers,
       problems = emptyList()
