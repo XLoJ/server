@@ -2,6 +2,7 @@ package cn.xlor.xloj.contest
 
 import cn.xlor.xloj.contest.dto.ContestWithWriter
 import cn.xlor.xloj.contest.dto.DetailContest
+import cn.xlor.xloj.contest.dto.UpdateContestDto
 import cn.xlor.xloj.exception.NotFoundException
 import cn.xlor.xloj.model.Contest
 import cn.xlor.xloj.model.UserProfile
@@ -19,6 +20,18 @@ class ContestService(
   fun createContest(name: String, user: UserProfile): DetailContest {
     val contestId = contestRepository.createContest(name, user.id)
     return findDetailContestWithUser(contestId, user)
+  }
+
+  fun updateContest(
+    contest: Contest,
+    updateContestDto: UpdateContestDto
+  ): Contest {
+    contest.name = updateContestDto.name ?: contest.name
+    contest.description = updateContestDto.description ?: contest.description
+    contest.startTime = Instant.parse(updateContestDto.startTime)
+    contest.duration = updateContestDto.duration ?: contest.duration
+    contestRepository.updateContest(contest.id, contest)
+    return contestRepository.findContestById(contest.id)!!
   }
 
   private fun addWritersToContest(contest: Contest): ContestWithWriter {

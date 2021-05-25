@@ -19,13 +19,13 @@ interface Contest : Entity<Contest> {
 
   val creator: Long
 
-  val name: String
+  var name: String
 
-  val description: String
+  var description: String
 
-  val startTime: Instant
+  var startTime: Instant
 
-  val duration: Int
+  var duration: Int
 
   val type: String
 

@@ -30,8 +30,12 @@ class ContestRepository(
     } as Long
   }
 
-  fun updateContest(contestId: Long) {
+  fun updateContest(contestId: Long, contest: Contest) {
     database.update(Contests) {
+      set(it.name, contest.name)
+      set(it.description, contest.description)
+      set(it.startTime, contest.startTime)
+      set(it.duration, contest.duration)
       where { it.id eq contestId }
     }
   }

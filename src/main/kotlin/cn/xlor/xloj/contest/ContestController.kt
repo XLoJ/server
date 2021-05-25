@@ -4,6 +4,8 @@ import cn.xlor.xloj.UserAttributeKey
 import cn.xlor.xloj.contest.dto.ContestWithWriter
 import cn.xlor.xloj.contest.dto.CreateContestDto
 import cn.xlor.xloj.contest.dto.DetailContest
+import cn.xlor.xloj.contest.dto.UpdateContestDto
+import cn.xlor.xloj.model.Contest
 import cn.xlor.xloj.model.UserProfile
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
@@ -21,6 +23,14 @@ class ContestController(
     @Valid @RequestBody createContestDto: CreateContestDto
   ): DetailContest {
     return contestService.createContest(createContestDto.name, user)
+  }
+
+  @PostMapping("/admin/{cid}")
+  fun updateContest(
+    @RequestAttribute contest: Contest,
+    @Valid @RequestBody updateContestDto: UpdateContestDto
+  ): Contest {
+    return contestService.updateContest(contest, updateContestDto)
   }
 
   @GetMapping

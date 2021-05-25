@@ -1,5 +1,6 @@
 package cn.xlor.xloj.security.filter
 
+import cn.xlor.xloj.repository.ContestRepository
 import cn.xlor.xloj.repository.ProblemRepository
 import cn.xlor.xloj.repository.UserRepository
 import cn.xlor.xloj.security.JWTService
@@ -12,7 +13,8 @@ import javax.servlet.Filter
 class SecurityFilterFactory(
   private val jwtService: JWTService,
   private val userRepository: UserRepository,
-  private val problemRepository: ProblemRepository
+  private val problemRepository: ProblemRepository,
+  private val contestRepository: ContestRepository
 ) {
   @Bean
   fun userAuthFilter(): FilterRegistrationBean<Filter> {
@@ -21,7 +23,7 @@ class SecurityFilterFactory(
     filterRegistrationBean.order = 1
     filterRegistrationBean.filter = UserAuthFilter(jwtService, userRepository)
     filterRegistrationBean.urlPatterns =
-      listOf("/profile", "/polygon/*", "/contest/create")
+      listOf("/profile", "/polygon/*", "/contest/create", "/contest/admin/*")
     return filterRegistrationBean
   }
 
@@ -41,7 +43,8 @@ class SecurityFilterFactory(
     filterRegistrationBean.setName("adminAuth")
     filterRegistrationBean.order = 2
     filterRegistrationBean.filter = AdminAuthFilter(userRepository)
-    filterRegistrationBean.urlPatterns = listOf("/contest/create")
+    filterRegistrationBean.urlPatterns =
+      listOf("/contest/create", "/contest/admin/*")
     return filterRegistrationBean
   }
 
@@ -77,6 +80,17 @@ class SecurityFilterFactory(
     )
     filterRegistrationBean.urlPatterns =
       listOf("/polygon/problem/*", "/polygon/judge/*")
+    return filterRegistrationBean
+  }
+
+  @Bean
+  fun contestAdminFilter(): FilterRegistrationBean<Filter> {
+    val filterRegistrationBean = FilterRegistrationBean<Filter>()
+    filterRegistrationBean.setName("contestAdmin")
+    filterRegistrationBean.order = 5
+    filterRegistrationBean.filter =
+      ContestAdminFilter(userRepository, contestRepository)
+    filterRegistrationBean.urlPatterns = listOf("/contest/admin/*")
     return filterRegistrationBean
   }
 }

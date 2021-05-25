@@ -14,6 +14,8 @@ const val UserAttributeKey = "user"
  */
 const val ProblemAttributeKey = "problem"
 
+const val ContestAttributeKey = "contest"
+
 const val ProblemBucketName = "problems"
 
 const val PolygonQueuName = "Polygon"
