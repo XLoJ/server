@@ -11,11 +11,13 @@ interface Contest : Entity<Contest> {
     const val PolygonType = "Polygon"
 
     const val LocalType = "Local"
+
+    const val RemoteType = "Remote"
   }
 
   val id: Long
 
-  val creator: User
+  val creator: Long
 
   val name: String
 
@@ -26,12 +28,14 @@ interface Contest : Entity<Contest> {
   val duration: Int
 
   val type: String
+
+  val public: Boolean
 }
 
 object Contests : Table<Contest>("contests") {
   val id = long("id").primaryKey().bindTo { it.id }
 
-  val creator = long("creator").references(Users) { it.creator }
+  val creator = long("creator").bindTo { it.creator }
 
   val name = text("name").bindTo { it.name }
 
@@ -42,6 +46,8 @@ object Contests : Table<Contest>("contests") {
   val duration = int("duration").bindTo { it.duration }
 
   val type = text("type").bindTo { it.type }
+
+  val public = boolean("public").bindTo { it.public }
 }
 
 val Database.contests get() = this.sequenceOf(Contests)

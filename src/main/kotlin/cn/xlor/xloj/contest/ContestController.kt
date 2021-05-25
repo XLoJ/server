@@ -1,5 +1,7 @@
 package cn.xlor.xloj.contest
 
+import cn.xlor.xloj.contest.dto.DetailContest
+import cn.xlor.xloj.model.Contest
 import cn.xlor.xloj.model.UserProfile
 import org.springframework.web.bind.annotation.*
 
@@ -9,14 +11,19 @@ import org.springframework.web.bind.annotation.*
 class ContestController(
   private val contestService: ContestService
 ) {
-  @GetMapping
-  fun findAllContests() {
+  @PostMapping("/admin")
+  fun createContest() {
 
   }
 
-  @GetMapping("/{cid}")
-  fun findDetailContest(@PathVariable cid: Long) {
+  @GetMapping
+  fun findAllPublicContests(): List<Contest> {
+    return contestService.findAllPublicContests()
+  }
 
+  @GetMapping("/{cid}")
+  fun findDetailContest(@PathVariable cid: Long): DetailContest {
+    return contestService.findDetailContest(cid)
   }
 
   @GetMapping("/{cid}/problems")
