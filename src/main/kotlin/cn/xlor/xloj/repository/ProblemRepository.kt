@@ -2,10 +2,7 @@ package cn.xlor.xloj.repository
 
 import cn.xlor.xloj.model.*
 import org.ktorm.database.Database
-import org.ktorm.dsl.eq
-import org.ktorm.dsl.insert
-import org.ktorm.dsl.insertAndGenerateKey
-import org.ktorm.dsl.update
+import org.ktorm.dsl.*
 import org.ktorm.entity.filter
 import org.ktorm.entity.find
 import org.ktorm.entity.map
@@ -30,6 +27,10 @@ class ProblemRepository(
     val accessProblemList =
       database.userProblems.filter { it.uid eq uid }.map { it.problem }.toList()
     return (createProblemList + accessProblemList).sortedByDescending { it.updateTime }
+  }
+
+  fun canUserAccessProblem(uid: Long, pid: Long): Boolean {
+    return database.userProblems.find { (it.uid eq uid) and (it.problem eq pid) } != null
   }
 
   /**

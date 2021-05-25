@@ -6,6 +6,7 @@ import cn.xlor.xloj.contest.dto.CreateContestDto
 import cn.xlor.xloj.contest.dto.DetailContest
 import cn.xlor.xloj.contest.dto.UpdateContestDto
 import cn.xlor.xloj.model.Contest
+import cn.xlor.xloj.model.ContestProblem
 import cn.xlor.xloj.model.UserProfile
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
@@ -43,6 +44,23 @@ class ContestController(
     ) public: Boolean
   ): Contest {
     return contestService.updateContestPublic(contest, public)
+  }
+
+  @PostMapping("/admin/{cid}/problem")
+  fun pushContestProblem(
+    @RequestAttribute user: UserProfile,
+    @RequestAttribute contest: Contest,
+    @RequestParam problem: Long
+  ): ContestProblem {
+    return contestService.pushContestProblem(user, contest, problem)
+  }
+
+  @DeleteMapping("/admin/{cid}/problem")
+  fun removeContestProblem(
+    @RequestAttribute contest: Contest,
+    @RequestParam contestProblem: Long
+  ) {
+
   }
 
   @GetMapping

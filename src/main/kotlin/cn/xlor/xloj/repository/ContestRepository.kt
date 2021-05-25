@@ -147,4 +147,46 @@ class ContestRepository(
     return database.contestProblems.filter { it.contest eq contestId }
       .sortedBy { it.index }.toList()
   }
+
+  fun pushContestProblem(contestId: Long, problemId: Long): ContestProblem {
+    var curIndex = 0
+    for ((index, contestProblem) in findAllContestProblems(contestId).withIndex()) {
+      if (index != contestProblem.index) {
+        curIndex = index
+        break
+      }
+    }
+    val cpId = database.insertAndGenerateKey(ContestProblems) {
+      set(it.contest, contestId)
+      set(it.problem, problemId)
+      set(it.index, curIndex)
+      set(it.visible, false)
+    } as Long
+    return database.contestProblems.find { it.id eq cpId }!!
+  }
+
+  fun updateContestProblemIndex(cpId: Long, index: Int) {
+    database.update(ContestProblems) {
+      set(it.index, index)
+      where { it.id eq cpId }
+    }
+  }
+
+  fun updateContestProblem(cpId: Long, problemId: Long) {
+    database.update(ContestProblems) {
+      set(it.problem, problemId)
+      where { it.id eq cpId }
+    }
+  }
+
+  fun setContestProblemVisible(cpId: Long, visible: Boolean) {
+    database.update(ContestProblems) {
+      set(it.visible, visible)
+      where { it.id eq cpId }
+    }
+  }
+
+  fun removeContestProblem(cpId: Long) {
+    database.delete(ContestProblems) { it.id eq cpId }
+  }
 }

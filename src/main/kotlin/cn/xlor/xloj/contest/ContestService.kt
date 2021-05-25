@@ -4,10 +4,14 @@ import cn.xlor.xloj.contest.dto.ContestWithWriter
 import cn.xlor.xloj.contest.dto.DetailContest
 import cn.xlor.xloj.contest.dto.UpdateContestDto
 import cn.xlor.xloj.exception.NotFoundException
+import cn.xlor.xloj.exception.UnAuthorizeException
 import cn.xlor.xloj.model.Contest
+import cn.xlor.xloj.model.ContestProblem
 import cn.xlor.xloj.model.UserProfile
 import cn.xlor.xloj.model.toUserProfile
+import cn.xlor.xloj.problem.ProblemService
 import cn.xlor.xloj.repository.ContestRepository
+import cn.xlor.xloj.repository.ProblemRepository
 import cn.xlor.xloj.repository.UserRepository
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -15,7 +19,9 @@ import java.time.Instant
 @Service
 class ContestService(
   private val contestRepository: ContestRepository,
-  private val userRepository: UserRepository
+  private val userRepository: UserRepository,
+  private val problemRepository: ProblemRepository,
+  private val problemService: ProblemService
 ) {
   fun createContest(name: String, user: UserProfile): DetailContest {
     val contestId = contestRepository.createContest(name, user.id)
@@ -152,5 +158,18 @@ class ContestService(
       writers = listOf(creator) + writers,
       problems = contestRepository.findAllContestProblems(contestId)
     )
+  }
+
+  fun pushContestProblem(
+    user: UserProfile,
+    contest: Contest,
+    problemId: Long
+  ): ContestProblem {
+    val problem = problemRepository.findProblemById(problemId)
+      ?: throw NotFoundException("未找到题目 $problemId.")
+    if (!problemService.canUserAccessProblem(user, problem)) {
+      throw UnAuthorizeException("用户 ${user.nickname} 无权访问题目 $problemId.")
+    }
+    return contestRepository.pushContestProblem(contest.id, problemId)
   }
 }

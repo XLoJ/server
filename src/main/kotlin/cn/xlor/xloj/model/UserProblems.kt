@@ -8,7 +8,9 @@ import org.ktorm.schema.long
 import org.ktorm.schema.text
 
 interface UserProblem : Entity<UserProblem> {
-  companion object : Entity.Factory<UserProblem>()
+  companion object : Entity.Factory<UserProblem>() {
+    const val LevelRead = "read"
+  }
 
   var id: Long
 

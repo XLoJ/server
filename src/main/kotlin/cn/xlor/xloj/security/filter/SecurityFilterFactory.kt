@@ -43,8 +43,7 @@ class SecurityFilterFactory(
     filterRegistrationBean.setName("adminAuth")
     filterRegistrationBean.order = 2
     filterRegistrationBean.filter = AdminAuthFilter(userRepository)
-    filterRegistrationBean.urlPatterns =
-      listOf("/contest/create", "/contest/admin/*")
+    filterRegistrationBean.urlPatterns = listOf("/contest/create")
     return filterRegistrationBean
   }
 
