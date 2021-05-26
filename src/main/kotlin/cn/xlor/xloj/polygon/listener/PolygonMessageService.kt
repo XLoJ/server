@@ -19,6 +19,9 @@ class PolygonMessageService(
     val polygonMessageKey =
       getPolygonMessageKey(polygonMessage.problem, polygonMessage.version)
     redisTemplate.opsForSet().add(polygonMessageKey, polygonMessage)
+    if (polygonMessage.action == PolygonMessage.START) {
+      redisTemplate.persist(polygonMessageKey)
+    }
   }
 
   fun findPolygonMessage(

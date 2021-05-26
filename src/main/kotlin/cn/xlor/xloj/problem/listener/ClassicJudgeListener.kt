@@ -16,6 +16,7 @@ class ClassicJudgeListener(
   fun handleJudgeMessage(message: ClassicJudgeMessage) {
     val submissionId = message.id
     if (message.verdict == Submission.Compiling) {
+      classicJudgeMessageService.resetClassicJudgeMessage(submissionId)
       submissionRepository.setSubmissionStatusAndFrom(
         submissionId,
         Submission.Compiling,

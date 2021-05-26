@@ -38,8 +38,6 @@ class ClassicJudgeService(
     payload += "code" to submission.body
     payload += "lang" to submission.language
 
-    classicJudgeMessageService.resetClassicJudgeMessage(submission.id)
-
     rabbitTemplate.convertAndSend(ClassicJudgeQueueName, payload)
   }
 }

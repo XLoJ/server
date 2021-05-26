@@ -1,5 +1,6 @@
 package cn.xlor.xloj.problem.listener
 
+import cn.xlor.xloj.model.Submission
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 
@@ -21,6 +22,9 @@ class ClassicJudgeMessageService(
   ) {
     val key = getClassicJudgeMessageKey(submissionId)
     redisTemplate.opsForSet().add(key, classicJudgeMessage)
+    if (classicJudgeMessage.verdict == Submission.Compiling) {
+      redisTemplate.persist(key)
+    }
   }
 
   fun findClassicJudgeMessage(submissionId: Long): List<Any> {
