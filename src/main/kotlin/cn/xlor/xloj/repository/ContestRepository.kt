@@ -1,6 +1,7 @@
 package cn.xlor.xloj.repository
 
 import cn.xlor.xloj.contest.dto.ContestWithWriter
+import cn.xlor.xloj.exception.BadRequestException
 import cn.xlor.xloj.model.*
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
@@ -141,6 +142,13 @@ class ContestRepository(
     return database.contestProblems.find { it.id eq cpId }
   }
 
+  fun findContestProblemByContestAndPid(
+    contestId: Long,
+    problemId: Long
+  ): ContestProblem? {
+    return database.contestProblems.find { (it.contest eq contestId) and (it.problem eq problemId) }
+  }
+
   fun findVisibleContestProblems(contestId: Long): List<ContestProblem> {
     return database.contestProblems.filter { it.contest eq contestId }
       .filter { it.visible eq true }
@@ -154,7 +162,11 @@ class ContestRepository(
 
   fun pushContestProblem(contestId: Long, problemId: Long): ContestProblem {
     var curIndex = 0
-    for ((index, contestProblem) in findAllContestProblems(contestId).withIndex()) {
+    val contestProblems = findAllContestProblems(contestId)
+    if (contestProblems.find { it.problem.id == problemId } != null) {
+      throw BadRequestException("不能添加相同的题目")
+    }
+    for ((index, contestProblem) in contestProblems.withIndex()) {
       if (index != contestProblem.index) {
         break
       }
