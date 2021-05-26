@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class SubmissionRepository(
-  private val database: Database
+  private val database: Database,
 ) {
   fun findSubmissionById(submissionId: Long): Submission? {
     return database.submissions.find { it.id eq submissionId }
@@ -37,6 +37,18 @@ class SubmissionRepository(
     userId: Long
   ): List<Submission> {
     return database.submissions.filter { (it.problem eq problemId) and (it.user eq userId) }
+      .sortedByDescending { it.id }.toList()
+  }
+
+  fun findAllPolygonSubmissionsByContestAndProblemAndUser(
+    contestId: Long,
+    problemId: Long,
+    userId: Long
+  ): List<Submission> {
+    return database.submissions
+      .filter { it.contest eq contestId }
+      .filter { it.problem eq problemId }
+      .filter { it.user eq userId }
       .sortedByDescending { it.id }.toList()
   }
 

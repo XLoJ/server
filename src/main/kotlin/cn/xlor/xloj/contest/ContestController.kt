@@ -7,7 +7,10 @@ import cn.xlor.xloj.contest.dto.DetailContest
 import cn.xlor.xloj.contest.dto.UpdateContestDto
 import cn.xlor.xloj.model.Contest
 import cn.xlor.xloj.model.ContestProblem
+import cn.xlor.xloj.model.Submission
 import cn.xlor.xloj.model.UserProfile
+import cn.xlor.xloj.problem.dto.ClassicSubmissionDto
+import cn.xlor.xloj.problem.dto.DetailClassicSubmission
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
@@ -113,8 +116,20 @@ class ContestController(
   fun submitCode(
     @RequestAttribute user: UserProfile,
     @PathVariable cid: Long,
-    @RequestParam problem: Int
-  ) {
+    @RequestParam problem: Long,
+    @RequestBody submission: ClassicSubmissionDto
+  ): Submission {
+    return contestService.submitCode(user, cid, problem, submission)
+  }
 
+  @GetMapping("/{cid}/submission/{sid}")
+  fun findDetailSubmisison(
+    @RequestAttribute user: UserProfile,
+    @PathVariable cid: Long,
+    @PathVariable sid: Long,
+    request: HttpServletRequest
+  ): DetailClassicSubmission {
+    val user = request.getAttribute(UserAttributeKey) as UserProfile?
+    return contestService.findUserSubmissionDetail(user, cid, sid)
   }
 }

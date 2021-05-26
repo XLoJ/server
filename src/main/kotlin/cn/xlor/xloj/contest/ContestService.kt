@@ -6,13 +6,15 @@ import cn.xlor.xloj.contest.dto.UpdateContestDto
 import cn.xlor.xloj.exception.BadRequestException
 import cn.xlor.xloj.exception.NotFoundException
 import cn.xlor.xloj.exception.UnAuthorizeException
-import cn.xlor.xloj.model.Contest
-import cn.xlor.xloj.model.ContestProblem
-import cn.xlor.xloj.model.UserProfile
-import cn.xlor.xloj.model.toUserProfile
+import cn.xlor.xloj.model.*
+import cn.xlor.xloj.problem.ClassicJudgeService
 import cn.xlor.xloj.problem.ProblemService
+import cn.xlor.xloj.problem.dto.ClassicSubmissionDto
+import cn.xlor.xloj.problem.dto.DetailClassicSubmission
+import cn.xlor.xloj.problem.listener.ClassicJudgeMessageService
 import cn.xlor.xloj.repository.ContestRepository
 import cn.xlor.xloj.repository.ProblemRepository
+import cn.xlor.xloj.repository.SubmissionRepository
 import cn.xlor.xloj.repository.UserRepository
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -22,7 +24,10 @@ class ContestService(
   private val contestRepository: ContestRepository,
   private val userRepository: UserRepository,
   private val problemRepository: ProblemRepository,
-  private val problemService: ProblemService
+  private val problemService: ProblemService,
+  private val submissionRepository: SubmissionRepository,
+  private val classicJudgeService: ClassicJudgeService,
+  private val classisJudgeMessageService: ClassicJudgeMessageService
 ) {
   fun createContest(name: String, user: UserProfile): DetailContest {
     val contestId = contestRepository.createContest(name, user.id)
@@ -111,6 +116,15 @@ class ContestService(
     )
   }
 
+  /**
+   * 公开比赛结束后才能查看提交内容
+   */
+  private fun canVisitorFindContestSubmission(contest: Contest): Boolean {
+    if (!contest.public) return false
+    return contest.startTime.toEpochMilli() + contest.duration * 60 * 1000 > Instant.now()
+      .toEpochMilli()
+  }
+
   fun findPublicDetailContest(contestId: Long): DetailContest {
     val contest = contestRepository.findContestById(contestId)
       ?: throw NotFoundException("无权访问比赛 $contestId.")
@@ -170,6 +184,91 @@ class ContestService(
     )
   }
 
+  // -- Submission
+  fun submitCode(
+    user: UserProfile,
+    contestId: Long,
+    cpId: Long,
+    submission: ClassicSubmissionDto
+  ): Submission {
+    val contest = contestRepository.findContestById(contestId)
+      ?: throw NotFoundException("未找到比赛 $contestId.")
+    val contestProblem = contestRepository.findContestProblemById(cpId)
+      ?: throw NotFoundException("未找到比赛题目 $cpId.")
+    if (contestProblem.contest.id != contest.id) {
+      throw BadRequestException("比赛题目 $cpId. 不属于比赛 ${contest.id}.")
+    }
+
+    val newSubmissionId = submissionRepository.createSubmission(
+      user.id,
+      contest.id,
+      contestProblem.problem.id,
+      submission.body,
+      submission.language
+    )
+    val newSubmission =
+      submissionRepository.findSubmissionById(newSubmissionId)!!
+    classicJudgeService.runClassicJudge(newSubmission)
+    return newSubmission
+  }
+
+  fun findUserSubmissionDetail(
+    user: UserProfile?,
+    contestId: Long,
+    submissionId: Long
+  ): DetailClassicSubmission {
+    val submission = submissionRepository.findSubmissionById(submissionId)
+      ?: throw NotFoundException("未找到提交 $submissionId")
+    val contest = contestRepository.findContestById(contestId)
+      ?: throw NotFoundException("未找到比赛 $contestId.")
+    if (submission.contest.id != contestId) {
+      throw BadRequestException("提交 $submissionId 不属于比赛 ${contestId}.")
+    }
+
+    // 比赛管理员
+    val isManager = user != null && canUserFindFullContest(contest, user)
+    // 用户自己的提交
+    val isSelfSubmission = user != null && submission.user == user.id
+    // 游客
+    val isVisitor = canVisitorFindContest(contest)
+
+    if (isManager || isSelfSubmission || isVisitor) {
+      val messages =
+        classisJudgeMessageService.findClassicJudgeMessage(submissionId)
+      return DetailClassicSubmission(
+        submission.id,
+        userRepository.findOneUserById(submission.user)!!.toUserProfile(),
+        submission.contest,
+        submission.problem,
+        submission.body,
+        submission.language,
+        submission.verdict,
+        submission.time,
+        submission.memory,
+        submission.pass,
+        submission.from,
+        submission.createTime,
+        messages
+      )
+    } else {
+      throw UnAuthorizeException("无法访问提交 $submissionId.")
+    }
+  }
+
+  fun findUserSubmissions(
+    user: UserProfile,
+    contestId: Long
+  ) {
+
+  }
+
+  fun findContestSubmissions(
+    contestId: Long
+  ) {
+
+  }
+
+  // --- Contest Problems ---
   fun findPublicProblems(contestId: Long): List<ContestProblem> {
     return contestRepository.findVisibleContestProblems(contestId)
   }

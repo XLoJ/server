@@ -24,7 +24,8 @@ class TestJudgeService(
     problem: Problem,
     user: UserProfile
   ): List<Submission> {
-    return submissionRepository.findAllSubmissionsByProblemAndUser(
+    return submissionRepository.findAllPolygonSubmissionsByContestAndProblemAndUser(
+      contestRepository.polygonContest().id,
       problem.id,
       user.id
     )
