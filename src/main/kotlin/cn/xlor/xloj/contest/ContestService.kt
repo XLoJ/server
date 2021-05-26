@@ -2,6 +2,7 @@ package cn.xlor.xloj.contest
 
 import cn.xlor.xloj.contest.dto.ContestWithWriter
 import cn.xlor.xloj.contest.dto.DetailContest
+import cn.xlor.xloj.contest.dto.SubmissionSummary
 import cn.xlor.xloj.contest.dto.UpdateContestDto
 import cn.xlor.xloj.exception.BadRequestException
 import cn.xlor.xloj.exception.NotFoundException
@@ -255,17 +256,43 @@ class ContestService(
     }
   }
 
+  private fun toSubmissionSummary(submission: Submission): SubmissionSummary {
+    return SubmissionSummary(
+      id = submission.id,
+      user = userRepository.findOneUserById(submission.user)!!.toUserProfile(),
+      contest = submission.contest,
+      problem = problemRepository.findProblemById(submission.problem)!!,
+      language = submission.language,
+      verdict = submission.verdict,
+      time = submission.time,
+      memory = submission.memory,
+      pass = submission.pass,
+      from = submission.from,
+      createTime = submission.createTime
+    )
+  }
+
   fun findUserSubmissions(
     user: UserProfile,
     contestId: Long
-  ) {
+  ): List<SubmissionSummary> {
+    contestRepository.findContestById(contestId)
+      ?: throw NotFoundException("未找到比赛 $contestId.")
 
+    return submissionRepository.findAllPolygonSubmissionsByContestAndUser(
+      contestId,
+      user.id
+    ).map { toSubmissionSummary(it) }
   }
 
-  fun findContestSubmissions(
+  fun findAllContestSubmissions(
+    user: UserProfile?,
     contestId: Long
-  ) {
-
+  ): List<SubmissionSummary> {
+    contestRepository.findContestById(contestId)
+      ?: throw NotFoundException("未找到比赛 $contestId.")
+    return submissionRepository.findAllSubmissionsByContest(contestId)
+      .map { toSubmissionSummary(it) }
   }
 
   // --- Contest Problems ---

@@ -40,6 +40,16 @@ class SubmissionRepository(
       .sortedByDescending { it.id }.toList()
   }
 
+  fun findAllPolygonSubmissionsByContestAndUser(
+    contestId: Long,
+    userId: Long
+  ): List<Submission> {
+    return database.submissions
+      .filter { it.contest eq contestId }
+      .filter { it.user eq userId }
+      .sortedByDescending { it.id }.toList()
+  }
+
   fun findAllPolygonSubmissionsByContestAndProblemAndUser(
     contestId: Long,
     problemId: Long,

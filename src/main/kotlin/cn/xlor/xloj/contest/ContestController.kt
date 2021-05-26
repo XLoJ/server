@@ -1,10 +1,7 @@
 package cn.xlor.xloj.contest
 
 import cn.xlor.xloj.UserAttributeKey
-import cn.xlor.xloj.contest.dto.ContestWithWriter
-import cn.xlor.xloj.contest.dto.CreateContestDto
-import cn.xlor.xloj.contest.dto.DetailContest
-import cn.xlor.xloj.contest.dto.UpdateContestDto
+import cn.xlor.xloj.contest.dto.*
 import cn.xlor.xloj.model.Contest
 import cn.xlor.xloj.model.ContestProblem
 import cn.xlor.xloj.model.Submission
@@ -124,12 +121,28 @@ class ContestController(
 
   @GetMapping("/{cid}/submission/{sid}")
   fun findDetailSubmisison(
-    @RequestAttribute user: UserProfile,
     @PathVariable cid: Long,
     @PathVariable sid: Long,
     request: HttpServletRequest
   ): DetailClassicSubmission {
     val user = request.getAttribute(UserAttributeKey) as UserProfile?
     return contestService.findUserSubmissionDetail(user, cid, sid)
+  }
+
+  @GetMapping("/{cid}/submissions/my")
+  fun findMySubmisisons(
+    @RequestAttribute user: UserProfile,
+    @PathVariable cid: Long,
+  ): List<SubmissionSummary> {
+    return contestService.findUserSubmissions(user, cid)
+  }
+
+  @GetMapping("/{cid}/submissions")
+  fun findAllSubmisisons(
+    @PathVariable cid: Long,
+    request: HttpServletRequest
+  ): List<SubmissionSummary> {
+    val user = request.getAttribute(UserAttributeKey) as UserProfile?
+    return contestService.findAllContestSubmissions(user, cid)
   }
 }
