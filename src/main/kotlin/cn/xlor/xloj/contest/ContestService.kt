@@ -185,7 +185,7 @@ class ContestService(
     )
   }
 
-  fun findContestProblem(
+  fun findContestProblemByIndex(
     user: UserProfile?,
     contestId: Long,
     problemIndex: Int
@@ -196,6 +196,37 @@ class ContestService(
       contestRepository.findContestProblemByContestAndIndex(
         contestId,
         problemIndex
+      )
+        ?: throw NotFoundException("未找到比赛题目")
+    if (contestProblem.contest.id != contest.id) {
+      throw BadRequestException("比赛题目不属于比赛 ${contest.id}.")
+    }
+
+    // 比赛管理员
+    val isManager = user != null && canUserFindFullContest(contest, user)
+    return if (isManager) {
+      contestProblem
+    } else {
+      if (contestProblem.visible && canVisitorFindContest(contest)) {
+        contestProblem
+      } else {
+        throw NotFoundException("未找到比赛题目")
+      }
+    }
+  }
+
+
+  fun findContestProblemByCpid(
+    user: UserProfile?,
+    contestId: Long,
+    pid: Long
+  ): ContestProblem {
+    val contest = contestRepository.findContestById(contestId)
+      ?: throw NotFoundException("无权访问比赛 $contestId.")
+    val contestProblem =
+      contestRepository.findContestProblemByContestAndCpid(
+        contestId,
+        pid
       )
         ?: throw NotFoundException("未找到比赛题目")
     if (contestProblem.contest.id != contest.id) {
