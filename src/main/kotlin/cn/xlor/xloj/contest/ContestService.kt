@@ -170,6 +170,21 @@ class ContestService(
     )
   }
 
+  fun findPublicProblems(contestId: Long): List<ContestProblem> {
+    return contestRepository.findVisibleContestProblems(contestId)
+  }
+
+  fun findUserProblems(
+    contestId: Long,
+    user: UserProfile
+  ): List<ContestProblem> {
+    if (userRepository.isUserAdmin(user.id)) {
+      return contestRepository.findAllContestProblems(contestId)
+    } else {
+      return contestRepository.findVisibleContestProblems(contestId)
+    }
+  }
+
   fun pushContestProblem(
     user: UserProfile,
     contest: Contest,

@@ -32,9 +32,7 @@ class ContestAdminFilter(
       val contestId = requestURIList[3].toLong()
       val contest = contestRepository.findContestById(contestId)
       if (contest != null) {
-        if (contestRepository.isBuiltinContest(contest)) {
-          makeUnAuthorizeResponse(response, "无权修改内置比赛")
-        } else if (userRepository.isUserAdmin(userProfile.id)
+        if (userRepository.isUserAdmin(userProfile.id)
           || userProfile.id == contest.creator
           || contestRepository.checkUserManageContest(
             contestId,
