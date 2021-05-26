@@ -107,14 +107,14 @@ class ContestController(
     return findDetailContest(cid, request).problems
   }
 
-  @GetMapping("/{cid}/problem/{pid}")
+  @GetMapping("/{cid}/problem/{index}")
   fun findProblem(
     @PathVariable cid: Long,
-    @PathVariable pid: Long,
+    @PathVariable index: Int,
     request: HttpServletRequest
   ): ContestProblem {
     val user = request.getAttribute(UserAttributeKey) as UserProfile?
-    return contestService.findContestProblem(user, cid, pid)
+    return contestService.findContestProblem(user, cid, index)
   }
 
   @PostMapping("/{cid}/submit")

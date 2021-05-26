@@ -142,11 +142,11 @@ class ContestRepository(
     return database.contestProblems.find { it.id eq cpId }
   }
 
-  fun findContestProblemByContestAndPid(
+  fun findContestProblemByContestAndIndex(
     contestId: Long,
-    problemId: Long
+    problemIndex: Int
   ): ContestProblem? {
-    return database.contestProblems.find { (it.contest eq contestId) and (it.problem eq problemId) }
+    return database.contestProblems.find { (it.contest eq contestId) and (it.index eq problemIndex) }
   }
 
   fun findVisibleContestProblems(contestId: Long): List<ContestProblem> {

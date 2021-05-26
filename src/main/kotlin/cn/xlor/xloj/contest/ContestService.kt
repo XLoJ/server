@@ -188,12 +188,15 @@ class ContestService(
   fun findContestProblem(
     user: UserProfile?,
     contestId: Long,
-    problemId: Long
+    problemIndex: Int
   ): ContestProblem {
     val contest = contestRepository.findContestById(contestId)
       ?: throw NotFoundException("无权访问比赛 $contestId.")
     val contestProblem =
-      contestRepository.findContestProblemByContestAndPid(contestId, problemId)
+      contestRepository.findContestProblemByContestAndIndex(
+        contestId,
+        problemIndex
+      )
         ?: throw NotFoundException("未找到比赛题目")
     if (contestProblem.contest.id != contest.id) {
       throw BadRequestException("比赛题目不属于比赛 ${contest.id}.")
